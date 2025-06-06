@@ -1,7 +1,9 @@
+import Dashboard from "@/app/dashboard/page";
+
 export default function Home() {
   return (
-    <main>
-      <h1>Hello World</h1>
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <Dashboard />
     </main>
   );
 }
