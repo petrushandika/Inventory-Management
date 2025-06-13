@@ -49,80 +49,101 @@ const CreateProductModal = ({
 
   if (!isOpen) return null;
 
-  const labelCssStyles = "block text-sm font-medium text-gray-700";
-  const inputCssStyles =
-    "block w-full mb-2 p-2 border-gray-500 border-2 rounded-md";
-
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-20">
-      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+      <div className="bg-white rounded-lg shadow w-full max-w-3xl p-8 overflow-y-auto max-h-[90vh]">
         <Header name="Create New Product" />
-        <form onSubmit={handleSubmit} className="mt-5">
-          <label htmlFor="productName" className={labelCssStyles}>
-            Product Name
-          </label>
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            onChange={handleChange}
-            value={formData.name}
-            className={inputCssStyles}
-            required
-          />
+        <form
+          onSubmit={handleSubmit}
+          className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          <div className="flex flex-col">
+            <label
+              htmlFor="name"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Product Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter product name"
+              onChange={handleChange}
+              value={formData.name}
+              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
+          </div>
 
-          <label htmlFor="productPrice" className={labelCssStyles}>
-            Price
-          </label>
-          <input
-            type="number"
-            name="price"
-            placeholder="Price"
-            onChange={handleChange}
-            value={formData.price}
-            className={inputCssStyles}
-            required
-          />
+          <div className="flex flex-col">
+            <label
+              htmlFor="price"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Price
+            </label>
+            <input
+              type="number"
+              name="price"
+              placeholder="Enter price"
+              onChange={handleChange}
+              value={formData.price}
+              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
+          </div>
 
-          <label htmlFor="stockQuantity" className={labelCssStyles}>
-            Stock Quantity
-          </label>
-          <input
-            type="number"
-            name="stockQuantity"
-            placeholder="Stock Quantity"
-            onChange={handleChange}
-            value={formData.stockQuantity}
-            className={inputCssStyles}
-            required
-          />
+          <div className="flex flex-col">
+            <label
+              htmlFor="stockQuantity"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Stock Quantity
+            </label>
+            <input
+              type="number"
+              name="stockQuantity"
+              placeholder="Enter stock quantity"
+              onChange={handleChange}
+              value={formData.stockQuantity}
+              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
+          </div>
 
-          <label htmlFor="rating" className={labelCssStyles}>
-            Rating
-          </label>
-          <input
-            type="number"
-            name="rating"
-            placeholder="Rating"
-            onChange={handleChange}
-            value={formData.rating}
-            className={inputCssStyles}
-            required
-          />
+          <div className="flex flex-col">
+            <label
+              htmlFor="rating"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Rating
+            </label>
+            <input
+              type="number"
+              name="rating"
+              placeholder="Enter rating"
+              onChange={handleChange}
+              value={formData.rating}
+              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
+          </div>
 
-          <button
-            type="submit"
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-          >
-            Create
-          </button>
-          <button
-            onClick={onClose}
-            type="button"
-            className="ml-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
-          >
-            Cancel
-          </button>
+          <div className="col-span-1 md:col-span-2 flex justify-end gap-4 mt-4">
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all"
+            >
+              Create
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600 transition-all"
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>
