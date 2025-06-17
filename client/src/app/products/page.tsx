@@ -10,6 +10,7 @@ import Image from "next/image";
 
 type ProductFormData = {
   name: string;
+  image?: string;
   price: number;
   stockQuantity: number;
   rating: number;
@@ -26,8 +27,12 @@ const Products = () => {
   } = useGetProductsQuery(searchTerm);
 
   const [createProduct] = useCreateProductMutation();
-  const handleCreateProduct = async (productData: ProductFormData) => {
-    await createProduct(productData);
+  const handleCreateProduct = async (formData: FormData) => {
+    try {
+      await createProduct(formData as any);
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
   };
 
   if (isLoading) {
@@ -67,7 +72,7 @@ const Products = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg-grid-cols-3 gap-10 justify-between">
+      <div className="grid grid-cols-1 sm:grid-cols-5 lg-grid-cols-6 gap-10 justify-between">
         {isLoading ? (
           <div>Loading...</div>
         ) : (
@@ -78,9 +83,7 @@ const Products = () => {
             >
               <div className="flex flex-col items-center">
                 <Image
-                  src={`https://s3-inventorymanagement.s3.us-east-2.amazonaws.com/product${
-                    Math.floor(Math.random() * 3) + 1
-                  }.png`}
+                  src={product.image || ""}
                   alt={product.name}
                   width={150}
                   height={150}

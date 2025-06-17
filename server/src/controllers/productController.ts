@@ -27,10 +27,11 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { productId, name, price, rating, stockQuantity } = req.body;
+    const { productId, image, name, price, rating, stockQuantity } = req.body;
     const product = await prisma.products.create({
       data: {
         productId,
+        image,
         name,
         price,
         rating,

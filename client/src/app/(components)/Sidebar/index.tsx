@@ -12,6 +12,7 @@ import {
   SlidersHorizontal,
   User,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -77,7 +78,14 @@ const Sidebar = () => {
           isSiderbarCollapsed ? "px-5" : "px-8"
         }`}
       >
-        <div>logo</div>
+        <div>
+          <Image
+            src="https://res.cloudinary.com/dqcyabvc2/image/upload/v1749802554/logo_w7rgwe.png"
+            width={20}
+            height={20}
+            alt="Logo"
+          />
+        </div>
         <h1
           className={`${
             isSiderbarCollapsed ? "hidden" : "block"
@@ -135,7 +143,7 @@ const Sidebar = () => {
 
       {/* Footer */}
       <div className={`${isSiderbarCollapsed ? "hidden" : "block"} mb-10`}>
-        <p className="text-center text-xs text-gray-500">&copy; 2025 XStock</p>
+        <p className="text-center text-xs text-gray-500">&copy; 2020 XStock</p>
       </div>
     </div>
   );

@@ -15,12 +15,14 @@ datasource db {
 
 model Users {
   userId String @id
+  image String?
   name   String
   email  String
 }
 
 model Products {
   productId     String      @id
+  image String?
   name          String
   price         Float
   rating        Float?

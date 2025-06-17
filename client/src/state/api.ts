@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export interface Product {
   productId: string;
   name: string;
+  image?: string;
   price: number;
   rating?: number;
   stockQuantity: number;
@@ -52,6 +53,7 @@ export interface DashboardMetrics {
 
 export interface User {
   userId: string;
+  image?: string;
   name: string;
   email: string;
 }

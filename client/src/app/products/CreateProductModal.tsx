@@ -1,11 +1,12 @@
 "use client";
 
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { v4 } from "uuid";
+import { X } from "lucide-react";
 import Header from "@/app/(components)/Header";
 
 type ProductFormData = {
   name: string;
+  image: File | null;
   price: number;
   stockQuantity: number;
   rating: number;
@@ -14,7 +15,7 @@ type ProductFormData = {
 type CreateProductModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (formData: ProductFormData) => void;
+  onCreate: (formData: FormData) => void;
 };
 
 const CreateProductModal = ({
@@ -22,9 +23,9 @@ const CreateProductModal = ({
   onClose,
   onCreate,
 }: CreateProductModalProps) => {
-  const [formData, setFormData] = useState({
-    productId: v4(),
+  const [formData, setFormData] = useState<ProductFormData>({
     name: "",
+    image: null,
     price: 0,
     stockQuantity: 0,
     rating: 0,
@@ -32,18 +33,46 @@ const CreateProductModal = ({
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+
+    setFormData((prev) => ({
+      ...prev,
       [name]:
         name === "price" || name === "stockQuantity" || name === "rating"
           ? parseFloat(value)
           : value,
-    });
+    }));
+  };
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        image: file,
+      }));
+    }
+  };
+
+  const removeImage = () => {
+    setFormData((prev) => ({
+      ...prev,
+      image: null,
+    }));
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onCreate(formData);
+
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("price", formData.price.toString());
+    data.append("stockQuantity", formData.stockQuantity.toString());
+    data.append("rating", formData.rating.toString());
+    if (formData.image) {
+      data.append("image", formData.image);
+    }
+
+    onCreate(data);
     onClose();
   };
 
@@ -57,11 +86,47 @@ const CreateProductModal = ({
           onSubmit={handleSubmit}
           className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6"
         >
+          <div className="md:col-span-2 flex flex-col">
+            <label className="text-sm font-medium text-gray-700 mb-2">
+              Upload Image
+            </label>
+
+            <div className="relative w-full h-48 border border-dashed border-gray-400 rounded-md flex items-center justify-center bg-gray-50 overflow-hidden">
+              {formData.image ? (
+                <>
+                  <img
+                    src={URL.createObjectURL(formData.image)}
+                    alt="Preview"
+                    className="object-contain w-full h-full"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                    title="Remove Image"
+                  >
+                    <X className="w-5 h-5 text-red-500" />
+                  </button>
+                </>
+              ) : (
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  required
+                />
+              )}
+              {!formData.image && (
+                <span className="text-gray-400">
+                  Click or drop an image here
+                </span>
+              )}
+            </div>
+          </div>
+
           <div className="flex flex-col">
-            <label
-              htmlFor="name"
-              className="text-sm font-medium text-gray-700 mb-1"
-            >
+            <label className="text-sm font-medium text-gray-700 mb-1">
               Product Name
             </label>
             <input
@@ -76,10 +141,7 @@ const CreateProductModal = ({
           </div>
 
           <div className="flex flex-col">
-            <label
-              htmlFor="price"
-              className="text-sm font-medium text-gray-700 mb-1"
-            >
+            <label className="text-sm font-medium text-gray-700 mb-1">
               Price
             </label>
             <input
@@ -94,10 +156,7 @@ const CreateProductModal = ({
           </div>
 
           <div className="flex flex-col">
-            <label
-              htmlFor="stockQuantity"
-              className="text-sm font-medium text-gray-700 mb-1"
-            >
+            <label className="text-sm font-medium text-gray-700 mb-1">
               Stock Quantity
             </label>
             <input
@@ -112,10 +171,7 @@ const CreateProductModal = ({
           </div>
 
           <div className="flex flex-col">
-            <label
-              htmlFor="rating"
-              className="text-sm font-medium text-gray-700 mb-1"
-            >
+            <label className="text-sm font-medium text-gray-700 mb-1">
               Rating
             </label>
             <input
@@ -129,7 +185,7 @@ const CreateProductModal = ({
             />
           </div>
 
-          <div className="col-span-1 md:col-span-2 flex justify-end gap-4 mt-4">
+          <div className="md:col-span-2 flex justify-end gap-4 mt-4">
             <button
               type="submit"
               className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all"
