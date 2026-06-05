@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { randomUUID } from "crypto";
 
 const prisma = new PrismaClient();
 
@@ -30,7 +31,7 @@ export const createProduct = async (
     const { productId, image, name, price, rating, stockQuantity } = req.body;
     const product = await prisma.products.create({
       data: {
-        productId,
+        productId: productId || randomUUID(),
         image,
         name,
         price,
@@ -40,6 +41,6 @@ export const createProduct = async (
     });
     res.status(201).json(product);
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving products" });
+    res.status(500).json({ message: "Error creating product" });
   }
 };

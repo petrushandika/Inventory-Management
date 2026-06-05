@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import Header from "@/app/(components)/Header";
+import { useAppDispatch, useAppSelector } from "@/app/redux";
+import { setIsDarkMode } from "@/state";
 
 type UserSetting = {
   label: string;
@@ -9,21 +11,46 @@ type UserSetting = {
   type: "text" | "toggle";
 };
 
-const mockSettings: UserSetting[] = [
-  { label: "Username", value: "john_doe", type: "text" },
-  { label: "Email", value: "john.doe@example.com", type: "text" },
-  { label: "Notification", value: true, type: "toggle" },
-  { label: "Dark Mode", value: false, type: "toggle" },
-  { label: "Language", value: "English", type: "text" },
-];
-
 const Settings = () => {
-  const [userSettings, setUserSettings] = useState<UserSetting[]>(mockSettings);
+  const dispatch = useAppDispatch();
+  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+
+  const [localSettings, setLocalSettings] = useState({
+    username: "john_doe",
+    email: "john.doe@example.com",
+    notification: true,
+    language: "English",
+  });
+
+  const userSettings: UserSetting[] = [
+    { label: "Username", value: localSettings.username, type: "text" },
+    { label: "Email", value: localSettings.email, type: "text" },
+    { label: "Notification", value: localSettings.notification, type: "toggle" },
+    { label: "Dark Mode", value: isDarkMode, type: "toggle" },
+    { label: "Language", value: localSettings.language, type: "text" },
+  ];
 
   const handleToggleChange = (index: number) => {
-    const settingsCopy = [...userSettings];
-    settingsCopy[index].value = !settingsCopy[index].value as boolean;
-    setUserSettings(settingsCopy);
+    const setting = userSettings[index];
+    if (setting.label === "Dark Mode") {
+      dispatch(setIsDarkMode(!isDarkMode));
+    } else if (setting.label === "Notification") {
+      setLocalSettings((prev) => ({
+        ...prev,
+        notification: !prev.notification,
+      }));
+    }
+  };
+
+  const handleTextChange = (index: number, newValue: string) => {
+    const setting = userSettings[index];
+    if (setting.label === "Username") {
+      setLocalSettings((prev) => ({ ...prev, username: newValue }));
+    } else if (setting.label === "Email") {
+      setLocalSettings((prev) => ({ ...prev, email: newValue }));
+    } else if (setting.label === "Language") {
+      setLocalSettings((prev) => ({ ...prev, language: newValue }));
+    }
   };
 
   return (
@@ -67,11 +94,7 @@ const Settings = () => {
                       type="text"
                       className="px-4 py-2 border rounded-lg text-gray-500 focus:outline-none focus:border-blue-500"
                       value={setting.value as string}
-                      onChange={(e) => {
-                        const settingsCopy = [...userSettings];
-                        settingsCopy[index].value = e.target.value;
-                        setUserSettings(settingsCopy);
-                      }}
+                      onChange={(e) => handleTextChange(index, e.target.value)}
                     />
                   )}
                 </td>

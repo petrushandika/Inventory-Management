@@ -62,8 +62,8 @@ const Expenses = () => {
           acc[data.category].color = `#${Math.floor(
             Math.random() * 16777215
           ).toString(16)}`;
-          acc[data.category].amount += amount;
         }
+        acc[data.category].amount += amount;
         return acc;
       }, {});
 

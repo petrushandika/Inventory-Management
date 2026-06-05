@@ -6,7 +6,7 @@ import { useState } from "react";
 import Header from "@/app/(components)/Header";
 import Rating from "@/app/(components)/Rating";
 import CreateProductModal from "./CreateProductModal";
-import Image from "next/image";
+import { NewProduct } from "@/state/api";
 
 type ProductFormData = {
   name: string;
@@ -27,9 +27,9 @@ const Products = () => {
   } = useGetProductsQuery(searchTerm);
 
   const [createProduct] = useCreateProductMutation();
-  const handleCreateProduct = async (formData: FormData) => {
+  const handleCreateProduct = async (productData: NewProduct) => {
     try {
-      await createProduct(formData as any);
+      await createProduct(productData);
     } catch (error) {
       console.error("Error creating product:", error);
     }
@@ -72,7 +72,7 @@ const Products = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-5 lg-grid-cols-6 gap-10 justify-between">
+      <div className="grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-6 gap-10 justify-between">
         {isLoading ? (
           <div>Loading...</div>
         ) : (
@@ -82,12 +82,10 @@ const Products = () => {
               className="border shadow rounded-md p-4 max-w-full w-full mx-auto"
             >
               <div className="flex flex-col items-center">
-                <Image
+                <img
                   src={product.image || ""}
                   alt={product.name}
-                  width={150}
-                  height={150}
-                  className="mb-3 rounded-2xl w-36 h-36"
+                  className="mb-3 rounded-2xl w-36 h-36 object-cover"
                 />
                 <h3 className="text-lg text-gray-900 font-semibold">
                   {product.name}

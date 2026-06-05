@@ -3,6 +3,7 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { X } from "lucide-react";
 import Header from "@/app/(components)/Header";
+import { NewProduct } from "@/state/api";
 
 type ProductFormData = {
   name: string;
@@ -15,7 +16,7 @@ type ProductFormData = {
 type CreateProductModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (formData: FormData) => void;
+  onCreate: (productData: NewProduct) => void;
 };
 
 const CreateProductModal = ({
@@ -60,19 +61,27 @@ const CreateProductModal = ({
     }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("price", formData.price.toString());
-    data.append("stockQuantity", formData.stockQuantity.toString());
-    data.append("rating", formData.rating.toString());
+    let base64Image = "";
     if (formData.image) {
-      data.append("image", formData.image);
+      base64Image = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          resolve(reader.result as string);
+        };
+        reader.readAsDataURL(formData.image as File);
+      });
     }
 
-    onCreate(data);
+    onCreate({
+      name: formData.name,
+      price: formData.price,
+      stockQuantity: formData.stockQuantity,
+      rating: formData.rating,
+      image: base64Image || undefined,
+    });
     onClose();
   };
 

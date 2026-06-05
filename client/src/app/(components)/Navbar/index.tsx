@@ -23,18 +23,7 @@ const Navbar = () => {
   };
 
   const { data: users, isLoading, isError } = useGetUsersQuery();
-
-  if (isLoading) {
-    return <div className="py-4">Loading...</div>;
-  }
-
-  if (isError || !users || users.length === 0) {
-    return (
-      <div className="text-center text-red-500 py-4">Failed to fetch users</div>
-    );
-  }
-
-  const user = users[0];
+  const user = users?.[0];
 
   return (
     <div className="flex justify-between items-center w-full mb-7">
@@ -79,15 +68,21 @@ const Navbar = () => {
           <hr className="w-0 h-7 border border-solid border-l border-gray-300 mx-3" />
 
           <div className="flex items-center gap-3 cursor-pointer">
-            <div className="w-9 h-9 overflow-hidden rounded-full">
-              <Image
-                src={user.image || ""}
-                width={36}
-                height={36}
-                alt={user.name}
-              />
+            <div className="w-9 h-9 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
+              {isLoading || isError || !user ? (
+                <div className="w-full h-full bg-gray-300 animate-pulse" />
+              ) : (
+                <Image
+                  src={user.image || ""}
+                  width={36}
+                  height={36}
+                  alt={user.name}
+                />
+              )}
             </div>
-            <span className="font-semibold">{user.name}</span>
+            <span className="font-semibold text-gray-700">
+              {isLoading ? "Loading..." : isError || !user ? "Guest" : user.name}
+            </span>
           </div>
         </div>
 

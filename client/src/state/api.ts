@@ -14,6 +14,7 @@ export interface NewProduct {
   price: number;
   rating?: number;
   stockQuantity: number;
+  image?: string;
 }
 
 export interface SalesSummary {
