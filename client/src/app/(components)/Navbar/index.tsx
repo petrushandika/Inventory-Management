@@ -43,7 +43,7 @@ const Navbar = () => {
           />
           <input
             type="search"
-            placeholder="Search products & groups..."
+            placeholder="Cari produk & kategori..."
             className="pl-9 pr-4 py-2 w-52 md:w-72 border border-gray-200 bg-white rounded-lg text-sm focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all"
           />
         </div>

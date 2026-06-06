@@ -1,16 +1,12 @@
 "use client";
 
-import {
-  ExpenseByCategorySummary,
-  useGetDashboardMetricsQuery,
-} from "@/state/api";
+import { ExpenseByCategorySummary, useGetDashboardMetricsQuery } from "@/state/api";
+import { formatRupiah, formatRupiahShort } from "@/lib/currency";
 import { TrendingUp } from "lucide-react";
 import { useMemo } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
-type ExpenseSums = {
-  [category: string]: number;
-};
+type ExpenseSums = { [category: string]: number };
 
 const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 
@@ -21,20 +17,11 @@ const CardExpenseSummary = () => {
   const expenseByCategorySummary = dashboardMetrics?.expenseByCategorySummary ?? [];
 
   const { expenseCategories, totalExpenses } = useMemo(() => {
-    const sums = expenseByCategorySummary.reduce(
-      (acc: ExpenseSums, item: ExpenseByCategorySummary) => {
-        const category = item.category;
-        acc[category] = (acc[category] ?? 0) + parseInt(item.amount, 10);
-        return acc;
-      },
-      {}
-    );
-
-    const categories = Object.entries(sums).map(([name, value]) => ({
-      name,
-      value,
-    }));
-
+    const sums = expenseByCategorySummary.reduce((acc: ExpenseSums, item: ExpenseByCategorySummary) => {
+      acc[item.category] = (acc[item.category] ?? 0) + parseInt(item.amount, 10);
+      return acc;
+    }, {});
+    const categories = Object.entries(sums).map(([name, value]) => ({ name, value }));
     const total = categories.reduce((acc, c) => acc + c.value, 0);
     return { expenseCategories: categories, totalExpenses: total };
   }, [expenseByCategorySummary]);
@@ -43,21 +30,18 @@ const CardExpenseSummary = () => {
     <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex flex-col flex-1">
       {isLoading ? (
         <div className="flex items-center justify-center min-h-[180px]">
-          <div className="text-sm text-gray-400 animate-pulse">Loading...</div>
+          <div className="text-sm text-gray-400 animate-pulse">Memuat...</div>
         </div>
       ) : (
         <>
-          {/* HEADER */}
           <div className="shrink-0">
             <h2 className="text-base font-semibold px-6 pt-5 pb-3 text-gray-800">
-              Expense Summary
+              Ringkasan Pengeluaran
             </h2>
             <hr className="border-gray-100" />
           </div>
 
-          {/* BODY */}
           <div className="flex items-center gap-3 px-5 py-4">
-            {/* CHART */}
             <div className="relative shrink-0" style={{ width: 120, height: 120 }}>
               <ResponsiveContainer width={120} height={120}>
                 <PieChart>
@@ -72,33 +56,22 @@ const CardExpenseSummary = () => {
                     paddingAngle={2}
                   >
                     {expenseCategories.map((_, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{
-                      borderRadius: "8px",
-                      border: "1px solid #e5e7eb",
-                      fontSize: "11px",
-                    }}
-                    formatter={(value: number) => [
-                      `$${value.toLocaleString()}`,
-                      "Amount",
-                    ]}
+                    contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: "11px" }}
+                    formatter={(value: number) => [formatRupiah(value), "Jumlah"]}
                   />
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <span className="text-xs font-bold text-gray-700 text-center leading-tight">
-                  ${(totalExpenses / 1000).toFixed(1)}k
+                  {formatRupiahShort(totalExpenses)}
                 </span>
               </div>
             </div>
 
-            {/* LEGEND */}
             <ul className="flex flex-col gap-1.5 flex-1 min-w-0">
               {expenseCategories.map((entry, index) => (
                 <li key={`legend-${index}`} className="flex items-center gap-2 text-xs text-gray-600">
@@ -108,14 +81,13 @@ const CardExpenseSummary = () => {
                   />
                   <span className="truncate">{entry.name}</span>
                   <span className="ml-auto font-medium text-gray-700 shrink-0">
-                    ${(entry.value / 1000).toFixed(1)}k
+                    {formatRupiahShort(entry.value)}
                   </span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* FOOTER */}
           {expenseSummary && (
             <>
               <hr className="border-gray-100 mx-5" />
@@ -123,7 +95,7 @@ const CardExpenseSummary = () => {
                 <span>
                   Total:{" "}
                   <span className="font-semibold text-gray-700">
-                    ${expenseSummary.totalExpenses.toFixed(0)}
+                    {formatRupiah(expenseSummary.totalExpenses)}
                   </span>
                 </span>
                 <span className="flex items-center text-green-500 font-medium">

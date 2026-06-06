@@ -1,72 +1,57 @@
 "use client";
 
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, TrendingDown, TrendingUp } from "lucide-react";
 import React from "react";
 
 type StatDetail = {
-  title: string;
-  amount: string;
-  changePercentage: number;
-  IconComponent: LucideIcon;
+  label: string;
+  value: string;
+  change?: number;
 };
 
 type StatCardProps = {
   title: string;
-  primaryIcon: React.ReactNode;
+  icon: LucideIcon;
+  iconColor: string;
+  iconBg: string;
   details: StatDetail[];
-  dateRange: string;
 };
 
-const StatCard = ({ title, primaryIcon, details, dateRange }: StatCardProps) => {
-  const formatPercentage = (value: number) => {
-    const signal = value >= 0 ? "+" : "";
-    return `${signal}${value.toFixed(0)}%`;
-  };
-
-  const getChangeColor = (value: number) =>
-    value >= 0 ? "text-green-500" : "text-red-500";
-
+const StatCard = ({ title, icon: Icon, iconColor, iconBg, details }: StatCardProps) => {
   return (
-    <div className="md:row-span-1 xl:row-span-2 bg-white col-span-1 shadow-sm rounded-2xl border border-gray-100 flex flex-col">
-      {/* HEADER */}
-      <div className="shrink-0">
-        <div className="flex justify-between items-center px-5 pt-4 pb-3">
-          <h2 className="font-semibold text-sm text-gray-800">{title}</h2>
-          <span className="text-xs text-gray-400">{dateRange}</span>
+    <div className="bg-white shadow-sm rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className={`p-2.5 rounded-xl ${iconBg}`}>
+          <Icon className={`w-5 h-5 ${iconColor}`} />
         </div>
-        <hr className="border-gray-100" />
+        <h3 className="text-sm font-semibold text-gray-800">{title}</h3>
       </div>
 
-      {/* BODY */}
-      <div className="flex-1 flex items-center gap-4 px-5 py-3">
-        <div className="rounded-xl p-3 bg-blue-50 border border-blue-100 shrink-0">
-          {primaryIcon}
-        </div>
-        <div className="flex-1 min-w-0">
-          {details.map((detail, index) => (
-            <React.Fragment key={index}>
-              <div className="flex items-center justify-between py-1.5 gap-2">
-                <span className="text-xs text-gray-500 truncate">{detail.title}</span>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-xs font-bold text-gray-800">
-                    ${detail.amount}
-                  </span>
-                  <div
-                    className={`flex items-center text-xs font-medium ${getChangeColor(
-                      detail.changePercentage
-                    )}`}
-                  >
-                    <detail.IconComponent className="w-3 h-3 mr-0.5" />
-                    {formatPercentage(detail.changePercentage)}
-                  </div>
-                </div>
-              </div>
-              {index < details.length - 1 && (
-                <hr className="border-gray-50" />
+      {/* Details */}
+      <div className="space-y-3">
+        {details.map((d, i) => (
+          <div key={i} className="flex items-center justify-between">
+            <span className="text-xs text-gray-500">{d.label}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-gray-800">{d.value}</span>
+              {d.change !== undefined && (
+                <span
+                  className={`flex items-center text-xs font-medium ${
+                    d.change >= 0 ? "text-green-500" : "text-red-500"
+                  }`}
+                >
+                  {d.change >= 0 ? (
+                    <TrendingUp className="w-3 h-3 mr-0.5" />
+                  ) : (
+                    <TrendingDown className="w-3 h-3 mr-0.5" />
+                  )}
+                  {Math.abs(d.change).toFixed(1)}%
+                </span>
               )}
-            </React.Fragment>
-          ))}
-        </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

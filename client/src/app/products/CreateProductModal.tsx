@@ -143,7 +143,7 @@ const CreateProductModal = ({
               <input
                 type="text"
                 name="name"
-                placeholder="e.g. Wireless Headphones"
+                placeholder="contoh: Headphone Wireless"
                 onChange={handleChange}
                 value={formData.name}
                 className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all"
@@ -153,7 +153,7 @@ const CreateProductModal = ({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Price ($)
+                Harga (Rp)
               </label>
               <input
                 type="number"

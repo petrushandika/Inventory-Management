@@ -64,7 +64,7 @@ const EditProductModal = ({ product, onClose, onSave }: EditProductModalProps) =
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Price ($)
+                Harga (Rp)
               </label>
               <input
                 type="number"

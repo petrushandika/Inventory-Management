@@ -55,12 +55,29 @@ export interface ExpenseByCategorySummary {
   date: string;
 }
 
+export interface DashboardStats {
+  totalSalesAmount: number;
+  totalSalesCount: number;
+  totalPurchaseCost: number;
+  totalPurchaseCount: number;
+  totalExpenses: number;
+  totalExpenseCount: number;
+  productCount: number;
+  userCount: number;
+  lowStockCount: number;
+  totalStockValue: number;
+  last30DaysSales: number;
+  last30DaysSalesCount: number;
+  last30DaysPurchases: number;
+}
+
 export interface DashboardMetrics {
   popularProducts: Product[];
   salesSummary: SalesSummary[];
   purchaseSummary: PurchaseSummary[];
   expenseSummary: ExpenseSummary[];
   expenseByCategorySummary: ExpenseByCategorySummary[];
+  stats: DashboardStats;
 }
 
 export interface User {

@@ -110,31 +110,31 @@ const Sidebar = () => {
         <SidebarLink
           href="/inventory"
           icon={Archive}
-          label="Inventory"
+          label="Inventaris"
           isCollapsed={isSiderbarCollapsed}
         />
         <SidebarLink
           href="/products"
           icon={Clipboard}
-          label="Products"
+          label="Produk"
           isCollapsed={isSiderbarCollapsed}
         />
         <SidebarLink
           href="/users"
           icon={User}
-          label="Users"
+          label="Pengguna"
           isCollapsed={isSiderbarCollapsed}
         />
         <SidebarLink
           href="/expenses"
           icon={CircleDollarSign}
-          label="Expenses"
+          label="Pengeluaran"
           isCollapsed={isSiderbarCollapsed}
         />
         <SidebarLink
           href="/settings"
           icon={SlidersHorizontal}
-          label="Settings"
+          label="Pengaturan"
           isCollapsed={isSiderbarCollapsed}
         />
       </nav>
