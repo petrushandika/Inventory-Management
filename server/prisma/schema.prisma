@@ -6,11 +6,21 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserRole {
+  Admin
+  Manager
+  Staff
+}
+
 model Users {
-  userId String  @id
-  image  String?
-  name   String
-  email  String  @unique
+  userId    String   @id
+  image     String?
+  name      String
+  email     String   @unique
+  role      UserRole @default(Staff)
+  createdAt DateTime @default(now())
+
+  @@index([role])
 }
 
 model Products {

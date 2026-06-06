@@ -3,174 +3,203 @@
     "userId": "3b0fd66b-a4d6-4d95-94e4-01940c99aedb",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Carly",
-    "email": "cvansalzberger0@cisco.com"
+    "email": "cvansalzberger0@cisco.com",
+    "role": "Admin"
   },
   {
     "userId": "d9d323fa-5c98-4222-a352-120e1f5e2798",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Inesita",
-    "email": "imcconnachie1@oaic.gov.au"
+    "email": "imcconnachie1@oaic.gov.au",
+    "role": "Manager"
   },
   {
     "userId": "9e2895ae-4afe-4ff2-b3b3-be15cf1c82d6",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Tulley",
-    "email": "tbridywater2@wikimedia.org"
+    "email": "tbridywater2@wikimedia.org",
+    "role": "Manager"
   },
   {
     "userId": "c7072fb5-cd2b-4703-8a58-328e5b7ed95a",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Amelia",
-    "email": "atondeur3@posterous.com"
+    "email": "atondeur3@posterous.com",
+    "role": "Manager"
   },
   {
     "userId": "22c29051-d301-4cc2-86dd-c19695408adb",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Bucky",
-    "email": "btompkin4@moonfruit.com"
+    "email": "btompkin4@moonfruit.com",
+    "role": "Staff"
   },
   {
     "userId": "6ac28937-bc05-4c0a-be7e-1a332e2de312",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Sherline",
-    "email": "sinston5@issuu.com"
+    "email": "sinston5@issuu.com",
+    "role": "Staff"
   },
   {
     "userId": "552c1c73-e324-47ee-bf7f-b0dfbeb59788",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Leontine",
-    "email": "lchartres6@edublogs.org"
+    "email": "lchartres6@edublogs.org",
+    "role": "Manager"
   },
   {
     "userId": "962c8a6b-c914-4aa4-93bc-2b91188a1a58",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Cloris",
-    "email": "cmorrall7@un.org"
+    "email": "cmorrall7@un.org",
+    "role": "Staff"
   },
   {
     "userId": "35393a7a-f41b-4fe9-8901-fc39a8f803d6",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Tobiah",
-    "email": "trubinchik8@time.com"
+    "email": "trubinchik8@time.com",
+    "role": "Staff"
   },
   {
     "userId": "9cf146a9-3da9-47fe-bcc3-3abdeb3a375d",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Colet",
-    "email": "cmincini9@dell.com"
+    "email": "cmincini9@dell.com",
+    "role": "Staff"
   },
   {
     "userId": "4a6efba9-61a2-4829-abe6-dfed18484737",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Van",
-    "email": "vswaitea@imdb.com"
+    "email": "vswaitea@imdb.com",
+    "role": "Staff"
   },
   {
     "userId": "6718765e-123c-42d4-b2b3-efc029ff854e",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Mella",
-    "email": "mheartyb@sphinn.com"
+    "email": "mheartyb@sphinn.com",
+    "role": "Manager"
   },
   {
     "userId": "0880eb85-2a08-4898-8aae-3cf90c48b08b",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Karyl",
-    "email": "kmatteic@live.com"
+    "email": "kmatteic@live.com",
+    "role": "Staff"
   },
   {
     "userId": "2977c5fe-22be-454a-80e1-5b93db92a371",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Berrie",
-    "email": "bnortcliffed@linkedin.com"
+    "email": "bnortcliffed@linkedin.com",
+    "role": "Staff"
   },
   {
     "userId": "bd909a0b-f665-451a-a052-8e8111e796e3",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Giselle",
-    "email": "gsollitte@weibo.com"
+    "email": "gsollitte@weibo.com",
+    "role": "Staff"
   },
   {
     "userId": "26409ed7-15ac-4695-9813-be2afb6dad26",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Niall",
-    "email": "nrebeirof@netvibes.com"
+    "email": "nrebeirof@netvibes.com",
+    "role": "Staff"
   },
   {
     "userId": "80697f6f-69bc-4b03-82c0-40f48884f716",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Afton",
-    "email": "ajozaitisg@craigslist.org"
+    "email": "ajozaitisg@craigslist.org",
+    "role": "Staff"
   },
   {
     "userId": "15d25fd9-32da-4ac7-b1b6-589a90a41dbf",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Letisha",
-    "email": "lgrimsdykeh@blogger.com"
+    "email": "lgrimsdykeh@blogger.com",
+    "role": "Staff"
   },
   {
     "userId": "0bd8b2b2-d67f-47dc-9acc-d2311006852b",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Julio",
-    "email": "jcuniami@weibo.com"
+    "email": "jcuniami@weibo.com",
+    "role": "Admin"
   },
   {
     "userId": "e83bae68-8104-4847-9f08-98206f35d100",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Dana",
-    "email": "dstrugnellj@51.la"
+    "email": "dstrugnellj@51.la",
+    "role": "Staff"
   },
   {
     "userId": "a4cf8f1f-8c61-404d-834d-220202358f91",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Gertie",
-    "email": "gmacrok@networkadvertising.org"
+    "email": "gmacrok@networkadvertising.org",
+    "role": "Manager"
   },
   {
     "userId": "e091dbc4-0fc5-4823-9fc4-1cdded1fc5f4",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Vidovik",
-    "email": "vriddettl@usgs.gov"
+    "email": "vriddettl@usgs.gov",
+    "role": "Staff"
   },
   {
     "userId": "e9ceef74-fb81-41e0-b52e-0089b978b2f3",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Yancey",
-    "email": "yfentemm@51.la"
+    "email": "yfentemm@51.la",
+    "role": "Manager"
   },
   {
     "userId": "9d82ca0e-cb41-4fba-a73f-acb7388e9d12",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Lyndell",
-    "email": "ldurninn@sciencedirect.com"
+    "email": "ldurninn@sciencedirect.com",
+    "role": "Staff"
   },
   {
     "userId": "ecea4d11-d41e-468a-85d3-e80a193a5620",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Heidie",
-    "email": "hrackhamo@craigslist.org"
+    "email": "hrackhamo@craigslist.org",
+    "role": "Staff"
   },
   {
     "userId": "29232f0d-2423-406f-956b-00ddf9540ac8",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Clem",
-    "email": "cthorbonp@smugmug.com"
+    "email": "cthorbonp@smugmug.com",
+    "role": "Manager"
   },
   {
     "userId": "afd4a67e-83ba-4a62-9cdc-2fdc0c553b29",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Paten",
-    "email": "pblasdaleq@quantcast.com"
+    "email": "pblasdaleq@quantcast.com",
+    "role": "Staff"
   },
   {
     "userId": "2a26982f-498f-4599-ab54-bc7469e2fbfd",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Daisi",
-    "email": "dsedgwickr@addthis.com"
+    "email": "dsedgwickr@addthis.com",
+    "role": "Staff"
   },
   {
     "userId": "c876a2cc-7528-4b61-837b-b7f7efc62cca",
     "image": "https://res.cloudinary.com/dqcyabvc2/image/upload/v1750143633/aiden_i0ib1g.png",
     "name": "Sara-ann",
-    "email": "sblundels@csmonitor.com"
+    "email": "sblundels@csmonitor.com",
+    "role": "Staff"
   }
 ]

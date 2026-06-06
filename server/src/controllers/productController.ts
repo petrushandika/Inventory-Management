@@ -49,3 +49,42 @@ export const createProduct = async (
     next(error);
   }
 };
+
+export const updateProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { productId } = req.params;
+    const { image, name, price, rating, stockQuantity } = req.body;
+
+    const product = await prisma.products.update({
+      where: { productId },
+      data: {
+        ...(image !== undefined && { image }),
+        ...(name && { name: name.trim() }),
+        ...(price != null && { price: Number(price) }),
+        ...(rating != null && { rating: Number(rating) }),
+        ...(stockQuantity != null && { stockQuantity: Number(stockQuantity) }),
+      },
+    });
+    res.json(product);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { productId } = req.params;
+    await prisma.products.delete({ where: { productId } });
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+};

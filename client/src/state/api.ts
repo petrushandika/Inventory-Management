@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+export type UserRole = "Admin" | "Manager" | "Staff";
+
 export interface Product {
   productId: string;
   name: string;
@@ -14,6 +16,15 @@ export interface NewProduct {
   price: number;
   rating?: number;
   stockQuantity: number;
+  image?: string;
+}
+
+export interface UpdateProduct {
+  productId: string;
+  name?: string;
+  price?: number;
+  rating?: number;
+  stockQuantity?: number;
   image?: string;
 }
 
@@ -57,6 +68,23 @@ export interface User {
   image?: string;
   name: string;
   email: string;
+  role: UserRole;
+  createdAt: string;
+}
+
+export interface NewUser {
+  name: string;
+  email: string;
+  role: UserRole;
+  image?: string;
+}
+
+export interface UpdateUser {
+  userId: string;
+  name?: string;
+  email?: string;
+  role?: UserRole;
+  image?: string;
 }
 
 export const api = createApi({
@@ -76,16 +104,40 @@ export const api = createApi({
       providesTags: ["Products"],
     }),
     createProduct: build.mutation<Product, NewProduct>({
-      query: (newProduct) => ({
-        url: "/products",
-        method: "POST",
-        body: newProduct,
+      query: (body) => ({ url: "/products", method: "POST", body }),
+      invalidatesTags: ["Products"],
+    }),
+    updateProduct: build.mutation<Product, UpdateProduct>({
+      query: ({ productId, ...body }) => ({
+        url: `/products/${productId}`,
+        method: "PUT",
+        body,
       }),
+      invalidatesTags: ["Products"],
+    }),
+    deleteProduct: build.mutation<void, string>({
+      query: (productId) => ({ url: `/products/${productId}`, method: "DELETE" }),
       invalidatesTags: ["Products"],
     }),
     getUsers: build.query<User[], void>({
       query: () => "/users",
       providesTags: ["Users"],
+    }),
+    createUser: build.mutation<User, NewUser>({
+      query: (body) => ({ url: "/users", method: "POST", body }),
+      invalidatesTags: ["Users"],
+    }),
+    updateUser: build.mutation<User, UpdateUser>({
+      query: ({ userId, ...body }) => ({
+        url: `/users/${userId}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Users"],
+    }),
+    deleteUser: build.mutation<void, string>({
+      query: (userId) => ({ url: `/users/${userId}`, method: "DELETE" }),
+      invalidatesTags: ["Users"],
     }),
     getExpensesByCategory: build.query<ExpenseByCategorySummary[], void>({
       query: () => "/expenses",
@@ -98,6 +150,11 @@ export const {
   useGetDashboardMetricsQuery,
   useGetProductsQuery,
   useCreateProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
   useGetUsersQuery,
+  useCreateUserMutation,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
   useGetExpensesByCategoryQuery,
 } = api;
