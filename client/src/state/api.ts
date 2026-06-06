@@ -9,6 +9,7 @@ export interface Product {
   price: number;
   rating?: number;
   stockQuantity: number;
+  categoryId?: string;
 }
 
 export interface NewProduct {
@@ -17,6 +18,7 @@ export interface NewProduct {
   rating?: number;
   stockQuantity: number;
   image?: string;
+  categoryId?: string;
 }
 
 export interface UpdateProduct {
@@ -104,10 +106,57 @@ export interface UpdateUser {
   image?: string;
 }
 
+export interface Category {
+  categoryId: string;
+  name: string;
+  description?: string;
+  color: string;
+  createdAt: string;
+  _count?: { Products: number };
+}
+
+export interface NewCategory {
+  name: string;
+  description?: string;
+  color?: string;
+}
+
+export interface UpdateCategory {
+  categoryId: string;
+  name?: string;
+  description?: string;
+  color?: string;
+}
+
+export interface Supplier {
+  supplierId: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  createdAt: string;
+  _count?: { Purchases: number };
+}
+
+export interface NewSupplier {
+  name: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+}
+
+export interface UpdateSupplier {
+  supplierId: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
   reducerPath: "api",
-  tagTypes: ["DashboardMetrics", "Products", "Users", "Expenses"],
+  tagTypes: ["DashboardMetrics", "Products", "Users", "Expenses", "Categories", "Suppliers"],
   endpoints: (build) => ({
     getDashboardMetrics: build.query<DashboardMetrics, void>({
       query: () => "/dashboard",
@@ -160,6 +209,38 @@ export const api = createApi({
       query: () => "/expenses",
       providesTags: ["Expenses"],
     }),
+    getCategories: build.query<Category[], string | void>({
+      query: (search) => ({ url: "/categories", params: search ? { search } : {} }),
+      providesTags: ["Categories"],
+    }),
+    createCategory: build.mutation<Category, NewCategory>({
+      query: (body) => ({ url: "/categories", method: "POST", body }),
+      invalidatesTags: ["Categories"],
+    }),
+    updateCategory: build.mutation<Category, UpdateCategory>({
+      query: ({ categoryId, ...body }) => ({ url: `/categories/${categoryId}`, method: "PUT", body }),
+      invalidatesTags: ["Categories"],
+    }),
+    deleteCategory: build.mutation<void, string>({
+      query: (categoryId) => ({ url: `/categories/${categoryId}`, method: "DELETE" }),
+      invalidatesTags: ["Categories"],
+    }),
+    getSuppliers: build.query<Supplier[], string | void>({
+      query: (search) => ({ url: "/suppliers", params: search ? { search } : {} }),
+      providesTags: ["Suppliers"],
+    }),
+    createSupplier: build.mutation<Supplier, NewSupplier>({
+      query: (body) => ({ url: "/suppliers", method: "POST", body }),
+      invalidatesTags: ["Suppliers"],
+    }),
+    updateSupplier: build.mutation<Supplier, UpdateSupplier>({
+      query: ({ supplierId, ...body }) => ({ url: `/suppliers/${supplierId}`, method: "PUT", body }),
+      invalidatesTags: ["Suppliers"],
+    }),
+    deleteSupplier: build.mutation<void, string>({
+      query: (supplierId) => ({ url: `/suppliers/${supplierId}`, method: "DELETE" }),
+      invalidatesTags: ["Suppliers"],
+    }),
   }),
 });
 
@@ -174,4 +255,12 @@ export const {
   useUpdateUserMutation,
   useDeleteUserMutation,
   useGetExpensesByCategoryQuery,
+  useGetCategoriesQuery,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+  useGetSuppliersQuery,
+  useCreateSupplierMutation,
+  useUpdateSupplierMutation,
+  useDeleteSupplierMutation,
 } = api;

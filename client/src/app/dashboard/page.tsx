@@ -28,51 +28,47 @@ const Dashboard = () => {
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <StatCard
-          title="Penjualan"
+          title="Sales"
           icon={BarChart2}
           iconColor="text-blue-600"
           iconBg="bg-blue-50"
           details={[
-            {
-              label: "Total Pendapatan",
-              value: isLoading ? "…" : formatRupiahShort(s?.totalSalesAmount ?? 0),
-              change: salesVsPurchaseChange,
-            },
-            { label: "Transaksi", value: isLoading ? "…" : fmtCount(s?.totalSalesCount ?? 0) },
-            { label: "30 Hari Terakhir", value: isLoading ? "…" : formatRupiahShort(s?.last30DaysSales ?? 0) },
+            { label: "Total Revenue", value: isLoading ? "…" : formatRupiahShort(s?.totalSalesAmount ?? 0), change: salesVsPurchaseChange },
+            { label: "Transactions", value: isLoading ? "…" : fmtCount(s?.totalSalesCount ?? 0) },
+            { label: "Last 30 Days", value: isLoading ? "…" : formatRupiahShort(s?.last30DaysSales ?? 0) },
           ]}
         />
         <StatCard
-          title="Pembelian"
+          title="Purchases"
           icon={ShoppingCart}
           iconColor="text-purple-600"
           iconBg="bg-purple-50"
           details={[
-            { label: "Total Biaya", value: isLoading ? "…" : formatRupiahShort(s?.totalPurchaseCost ?? 0) },
-            { label: "Transaksi", value: isLoading ? "…" : fmtCount(s?.totalPurchaseCount ?? 0) },
-            { label: "30 Hari Terakhir", value: isLoading ? "…" : formatRupiahShort(s?.last30DaysPurchases ?? 0) },
+            { label: "Total Cost", value: isLoading ? "…" : formatRupiahShort(s?.totalPurchaseCost ?? 0) },
+            { label: "Transactions", value: isLoading ? "…" : fmtCount(s?.totalPurchaseCount ?? 0) },
+            { label: "Last 30 Days", value: isLoading ? "…" : formatRupiahShort(s?.last30DaysPurchases ?? 0) },
           ]}
         />
         <StatCard
-          title="Inventaris"
+          title="Inventory"
           icon={Package}
           iconColor="text-green-600"
           iconBg="bg-green-50"
           details={[
-            { label: "Total Produk", value: isLoading ? "…" : fmtCount(s?.productCount ?? 0) },
-            { label: "Nilai Stok", value: isLoading ? "…" : formatRupiahShort(s?.totalStockValue ?? 0) },
-            { label: "Stok Menipis", value: isLoading ? "…" : fmtCount(s?.lowStockCount ?? 0) },
+            { label: "Total Products", value: isLoading ? "…" : fmtCount(s?.productCount ?? 0) },
+            { label: "Stock Value", value: isLoading ? "…" : formatRupiahShort(s?.totalStockValue ?? 0) },
+            { label: "Low Stock", value: isLoading ? "…" : fmtCount(s?.lowStockCount ?? 0) },
           ]}
         />
         <StatCard
-          title="Pengguna & Pengeluaran"
+          title="Users & Expenses"
           icon={Users}
           iconColor="text-orange-600"
           iconBg="bg-orange-50"
           details={[
-            { label: "Total Pengguna", value: isLoading ? "…" : fmtCount(s?.userCount ?? 0) },
-            { label: "Total Pengeluaran", value: isLoading ? "…" : formatRupiahShort(s?.totalExpenses ?? 0) },
-            { label: "Catatan Pengeluaran", value: isLoading ? "…" : fmtCount(s?.totalExpenseCount ?? 0) },
+            { label: "Total Users", value: isLoading ? "…" : fmtCount(s?.userCount ?? 0) },
+            { label: "Total Expenses", value: isLoading ? "…" : formatRupiahShort(s?.totalExpenses ?? 0) },
+            { label: "Expense Records", value: isLoading ? "…" : fmtCount(s?.totalExpenseCount ?? 0) },
           ]}
         />
       </div>

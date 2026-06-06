@@ -7,6 +7,8 @@ import dashboardRoutes from "./routes/dashboardRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import expenseRoutes from "./routes/expenseRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import supplierRoutes from "./routes/supplierRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 dotenv.config();
@@ -33,6 +35,8 @@ app.use("/dashboard", dashboardRoutes);
 app.use("/products", productRoutes);
 app.use("/users", userRoutes);
 app.use("/expenses", expenseRoutes);
+app.use("/categories", categoryRoutes);
+app.use("/suppliers", supplierRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

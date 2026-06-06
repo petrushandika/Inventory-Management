@@ -23,6 +23,29 @@ model Users {
   @@index([role])
 }
 
+model Categories {
+  categoryId  String     @id
+  name        String     @unique
+  description String?
+  color       String     @default("#3b82f6")
+  createdAt   DateTime   @default(now())
+  Products    Products[]
+
+  @@index([name])
+}
+
+model Suppliers {
+  supplierId String      @id
+  name       String
+  email      String?
+  phone      String?
+  address    String?
+  createdAt  DateTime    @default(now())
+  Purchases  Purchases[]
+
+  @@index([name])
+}
+
 model Products {
   productId     String      @id
   image         String?
@@ -30,11 +53,14 @@ model Products {
   price         Float
   rating        Float?
   stockQuantity Int
+  categoryId    String?
+  category      Categories? @relation(fields: [categoryId], references: [categoryId])
   Sales         Sales[]
   Purchases     Purchases[]
 
   @@index([name])
   @@index([stockQuantity])
+  @@index([categoryId])
 }
 
 model Sales {
@@ -51,15 +77,18 @@ model Sales {
 }
 
 model Purchases {
-  purchaseId String   @id
+  purchaseId String     @id
   productId  String
+  supplierId String?
   timestamp  DateTime
   quantity   Int
   unitCost   Float
   totalCost  Float
-  product    Products @relation(fields: [productId], references: [productId])
+  product    Products  @relation(fields: [productId], references: [productId])
+  supplier   Suppliers? @relation(fields: [supplierId], references: [supplierId])
 
   @@index([productId])
+  @@index([supplierId])
   @@index([timestamp])
 }
 

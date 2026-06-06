@@ -4,14 +4,7 @@ import { useGetDashboardMetricsQuery } from "@/state/api";
 import { formatRupiah, formatRupiahShort } from "@/lib/currency";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import React from "react";
-import {
-  Area,
-  AreaChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 const CardPurchaseSummary = () => {
   const { data, isLoading } = useGetDashboardMetricsQuery();
@@ -24,20 +17,18 @@ const CardPurchaseSummary = () => {
     <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex flex-col">
       {isLoading ? (
         <div className="flex items-center justify-center min-h-[200px]">
-          <div className="text-sm text-gray-400 animate-pulse">Memuat...</div>
+          <div className="text-sm text-gray-400 animate-pulse">Loading...</div>
         </div>
       ) : (
         <>
           <div className="shrink-0">
-            <h2 className="text-base font-semibold px-6 pt-5 pb-3 text-gray-800">
-              Ringkasan Pembelian
-            </h2>
+            <h2 className="text-base font-semibold px-6 pt-5 pb-3 text-gray-800">Purchase Summary</h2>
             <hr className="border-gray-100" />
           </div>
 
           <div className="px-6 pt-4 pb-3">
             <div className="mb-3">
-              <p className="text-xs text-gray-400 mb-0.5">Pembelian Terakhir</p>
+              <p className="text-xs text-gray-400 mb-0.5">Latest Purchase</p>
               <div className="flex items-baseline gap-2">
                 <p className="text-2xl font-bold text-gray-800">
                   {lastDataPoint ? formatRupiahShort(lastDataPoint.totalPurchased) : "Rp 0"}
@@ -64,22 +55,12 @@ const CardPurchaseSummary = () => {
                   <YAxis tickLine={false} tick={false} axisLine={false} />
                   <Tooltip
                     contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: "12px" }}
-                    formatter={(value: number) => [formatRupiah(value), "Pembelian"]}
+                    formatter={(value: number) => [formatRupiah(value), "Purchases"]}
                     labelFormatter={(label) =>
-                      new Date(label).toLocaleDateString("id-ID", {
-                        year: "numeric", month: "long", day: "numeric",
-                      })
+                      new Date(label).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
                     }
                   />
-                  <Area
-                    type="monotone"
-                    dataKey="totalPurchased"
-                    stroke="#8b5cf6"
-                    strokeWidth={2}
-                    fill="url(#purchaseGradient)"
-                    dot={false}
-                    activeDot={{ r: 4 }}
-                  />
+                  <Area type="monotone" dataKey="totalPurchased" stroke="#8b5cf6" strokeWidth={2} fill="url(#purchaseGradient)" dot={false} activeDot={{ r: 4 }} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

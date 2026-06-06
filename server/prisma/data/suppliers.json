@@ -1,0 +1,7 @@
+[
+  { "supplierId": "sup1", "name": "PT Teknologi Maju", "email": "info@teknologimaju.co.id", "phone": "021-5550001", "address": "Jl. Gatot Subroto No. 45, Jakarta Selatan" },
+  { "supplierId": "sup2", "name": "CV Sumber Sandang", "email": "order@sumbersandang.com", "phone": "022-5550002", "address": "Jl. Asia Afrika No. 100, Bandung" },
+  { "supplierId": "sup3", "name": "PT Agro Nusantara", "email": "sales@agronusantara.id", "phone": "031-5550003", "address": "Jl. Pemuda No. 22, Surabaya" },
+  { "supplierId": "sup4", "name": "UD Mebel Jaya", "email": "mebeljaya@gmail.com", "phone": "0274-5550004", "address": "Jl. Malioboro No. 88, Yogyakarta" },
+  { "supplierId": "sup5", "name": "PT Olahraga Prima", "email": "contact@olahragaprima.com", "phone": "021-5550005", "address": "Jl. Sudirman No. 12, Jakarta Pusat" }
+]

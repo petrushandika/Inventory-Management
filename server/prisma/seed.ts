@@ -18,6 +18,8 @@ async function clearAllData() {
   await prisma.purchaseSummary.deleteMany({});
   await prisma.expenses.deleteMany({});
   await prisma.users.deleteMany({});
+  await prisma.suppliers.deleteMany({});
+  await prisma.categories.deleteMany({});
   console.log("Cleared all existing data");
 }
 
@@ -51,6 +53,8 @@ async function main() {
 
   // Insert in dependency order (parents first, then children)
   const insertOrder = [
+    "categories.json",
+    "suppliers.json",
     "users.json",
     "products.json",
     "sales.json",

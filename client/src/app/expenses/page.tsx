@@ -6,11 +6,7 @@ import Header from "@/app/(components)/Header";
 import { formatRupiah } from "@/lib/currency";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
-type AggregatedDataItem = {
-  name: string;
-  color: string;
-  amount: number;
-};
+type AggregatedDataItem = { name: string; color: string; amount: number };
 
 const CATEGORY_COLORS: Record<string, string> = {
   Office: "#3b82f6",
@@ -57,36 +53,36 @@ const Expenses = () => {
 
   const totalAmount = aggregatedData.reduce((sum, d) => sum + d.amount, 0);
 
-  if (isLoading) return <div className="flex items-center justify-center py-20 text-sm text-gray-400 animate-pulse">Memuat pengeluaran...</div>;
-  if (isError || !expensesData) return <div className="flex items-center justify-center py-20 text-sm text-red-500">Gagal memuat pengeluaran.</div>;
+  if (isLoading) return <div className="flex items-center justify-center py-20 text-sm text-gray-400 animate-pulse">Loading expenses...</div>;
+  if (isError || !expensesData) return <div className="flex items-center justify-center py-20 text-sm text-red-500">Failed to load expenses.</div>;
 
   const categories = [...new Set(expenses.map((e) => e.category))];
 
   return (
     <div className="pb-8">
       <div className="mb-6">
-        <Header name="Pengeluaran" />
-        <p className="text-sm text-gray-400 mt-1">Rincian pengeluaran berdasarkan kategori dan rentang tanggal.</p>
+        <Header name="Expenses" />
+        <p className="text-sm text-gray-400 mt-1">Expense breakdown by category and date range.</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-5">
-        {/* FILTER PANEL */}
+        {/* Filter Panel */}
         <div className="w-full lg:w-64 shrink-0 bg-white shadow-sm rounded-2xl border border-gray-100 p-5">
-          <h3 className="text-sm font-semibold text-gray-800 mb-4">Filter</h3>
+          <h3 className="text-sm font-semibold text-gray-800 mb-4">Filters</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">Kategori</label>
+              <label className="block text-xs font-medium text-gray-500 mb-1.5">Category</label>
               <select
                 className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
-                <option value="All">Semua Kategori</option>
+                <option value="All">All Categories</option>
                 {categories.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Mulai</label>
+              <label className="block text-xs font-medium text-gray-500 mb-1.5">Start Date</label>
               <input
                 type="date"
                 className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all"
@@ -95,7 +91,7 @@ const Expenses = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Akhir</label>
+              <label className="block text-xs font-medium text-gray-500 mb-1.5">End Date</label>
               <input
                 type="date"
                 className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all"
@@ -108,14 +104,14 @@ const Expenses = () => {
                 className="w-full text-xs text-gray-400 hover:text-gray-600 py-1 transition-colors"
                 onClick={() => { setSelectedCategory("All"); setStartDate(""); setEndDate(""); }}
               >
-                Hapus filter
+                Clear filters
               </button>
             )}
           </div>
 
           {aggregatedData.length > 0 && (
             <div className="mt-5 pt-4 border-t border-gray-100">
-              <p className="text-xs font-medium text-gray-500 mb-2">Ringkasan</p>
+              <p className="text-xs font-medium text-gray-500 mb-2">Summary</p>
               <div className="space-y-2">
                 {aggregatedData.map((item, index) => (
                   <div key={index} className="flex items-center justify-between">
@@ -135,11 +131,11 @@ const Expenses = () => {
           )}
         </div>
 
-        {/* PIE CHART */}
+        {/* Pie Chart */}
         <div className="flex-1 bg-white shadow-sm rounded-2xl border border-gray-100 p-5 min-h-[460px]">
           {aggregatedData.length === 0 ? (
             <div className="flex items-center justify-center h-full min-h-[300px] text-sm text-gray-400">
-              Tidak ada data untuk filter yang dipilih.
+              No data for the selected filters.
             </div>
           ) : (
             <ResponsiveContainer width="100%" height={420}>
@@ -167,13 +163,9 @@ const Expenses = () => {
                 </Pie>
                 <Tooltip
                   contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: "12px" }}
-                  formatter={(value: number) => [formatRupiah(value), "Jumlah"]}
+                  formatter={(value: number) => [formatRupiah(value), "Amount"]}
                 />
-                <Legend
-                  iconType="circle"
-                  iconSize={10}
-                  formatter={(value) => <span style={{ fontSize: "12px", color: "#6b7280" }}>{value}</span>}
-                />
+                <Legend iconType="circle" iconSize={10} formatter={(value) => <span style={{ fontSize: "12px", color: "#6b7280" }}>{value}</span>} />
               </PieChart>
             </ResponsiveContainer>
           )}
