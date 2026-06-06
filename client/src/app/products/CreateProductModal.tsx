@@ -1,7 +1,7 @@
 "use client";
 
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { X } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import Header from "@/app/(components)/Header";
 import { NewProduct } from "@/state/api";
 
@@ -34,7 +34,6 @@ const CreateProductModal = ({
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]:
@@ -46,20 +45,10 @@ const CreateProductModal = ({
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        image: file,
-      }));
-    }
+    if (file) setFormData((prev) => ({ ...prev, image: file }));
   };
 
-  const removeImage = () => {
-    setFormData((prev) => ({
-      ...prev,
-      image: null,
-    }));
-  };
+  const removeImage = () => setFormData((prev) => ({ ...prev, image: null }));
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,9 +57,7 @@ const CreateProductModal = ({
     if (formData.image) {
       base64Image = await new Promise<string>((resolve) => {
         const reader = new FileReader();
-        reader.onloadend = () => {
-          resolve(reader.result as string);
-        };
+        reader.onloadend = () => resolve(reader.result as string);
         reader.readAsDataURL(formData.image as File);
       });
     }
@@ -82,131 +69,154 @@ const CreateProductModal = ({
       rating: formData.rating,
       image: base64Image || undefined,
     });
+
+    setFormData({ name: "", image: null, price: 0, stockQuantity: 0, rating: 0 });
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
-      <div className="bg-white rounded-lg shadow w-full max-w-3xl p-8 overflow-y-auto max-h-[90vh]">
-        <Header name="Create New Product" />
-        <form
-          onSubmit={handleSubmit}
-          className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
-          <div className="md:col-span-2 flex flex-col">
-            <label className="text-sm font-medium text-gray-700 mb-2">
-              Upload Image
-            </label>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-y-auto max-h-[90vh]">
+        {/* MODAL HEADER */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <Header name="Add New Product" />
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <X className="w-5 h-5 text-gray-500" />
+          </button>
+        </div>
 
-            <div className="relative w-full h-48 border border-dashed border-gray-400 rounded-md flex items-center justify-center bg-gray-50 overflow-hidden">
+        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-5">
+          {/* IMAGE UPLOAD */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Product Image
+            </label>
+            <div className="relative border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 overflow-hidden">
               {formData.image ? (
-                <>
+                <div className="relative h-48">
                   <img
                     src={URL.createObjectURL(formData.image)}
                     alt="Preview"
-                    className="object-contain w-full h-full"
+                    className="w-full h-full object-contain"
                   />
                   <button
                     type="button"
                     onClick={removeImage}
-                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
-                    title="Remove Image"
+                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm hover:bg-gray-100 transition-colors"
                   >
-                    <X className="w-5 h-5 text-red-500" />
+                    <X className="w-4 h-4 text-red-500" />
                   </button>
-                </>
+                </div>
               ) : (
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                  required
-                />
-              )}
-              {!formData.image && (
-                <span className="text-gray-400">
-                  Click or drop an image here
-                </span>
+                <label className="flex flex-col items-center justify-center h-40 cursor-pointer">
+                  <Upload className="w-8 h-8 text-gray-300 mb-2" />
+                  <span className="text-sm text-gray-400">
+                    Click to upload an image
+                  </span>
+                  <span className="text-xs text-gray-300 mt-1">
+                    PNG, JPG, GIF up to 10MB
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                    required
+                  />
+                </label>
               )}
             </div>
           </div>
 
-          <div className="flex flex-col">
-            <label className="text-sm font-medium text-gray-700 mb-1">
-              Product Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              placeholder="Enter product name"
-              onChange={handleChange}
-              value={formData.name}
-              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
+          {/* FORM FIELDS */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Product Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                placeholder="e.g. Wireless Headphones"
+                onChange={handleChange}
+                value={formData.name}
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Price ($)
+              </label>
+              <input
+                type="number"
+                name="price"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+                onChange={handleChange}
+                value={formData.price}
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Stock Quantity
+              </label>
+              <input
+                type="number"
+                name="stockQuantity"
+                placeholder="0"
+                min="0"
+                onChange={handleChange}
+                value={formData.stockQuantity}
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Rating (0–5)
+              </label>
+              <input
+                type="number"
+                name="rating"
+                placeholder="0"
+                min="0"
+                max="5"
+                step="0.1"
+                onChange={handleChange}
+                value={formData.rating}
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all"
+                required
+              />
+            </div>
           </div>
 
-          <div className="flex flex-col">
-            <label className="text-sm font-medium text-gray-700 mb-1">
-              Price
-            </label>
-            <input
-              type="number"
-              name="price"
-              placeholder="Enter price"
-              onChange={handleChange}
-              value={formData.price}
-              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm font-medium text-gray-700 mb-1">
-              Stock Quantity
-            </label>
-            <input
-              type="number"
-              name="stockQuantity"
-              placeholder="Enter stock quantity"
-              onChange={handleChange}
-              value={formData.stockQuantity}
-              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm font-medium text-gray-700 mb-1">
-              Rating
-            </label>
-            <input
-              type="number"
-              name="rating"
-              placeholder="Enter rating"
-              onChange={handleChange}
-              value={formData.rating}
-              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
-
-          <div className="md:col-span-2 flex justify-end gap-4 mt-4">
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all"
-            >
-              Create
-            </button>
+          {/* ACTIONS */}
+          <div className="flex justify-end gap-3 pt-2 border-t border-gray-100">
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600 transition-all"
+              className="px-5 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
             >
               Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+            >
+              Create Product
             </button>
           </div>
         </form>

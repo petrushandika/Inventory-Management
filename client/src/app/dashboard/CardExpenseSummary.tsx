@@ -5,126 +5,134 @@ import {
   useGetDashboardMetricsQuery,
 } from "@/state/api";
 import { TrendingUp } from "lucide-react";
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { useMemo } from "react";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 type ExpenseSums = {
   [category: string]: number;
 };
 
-const colors = ["#00C49F", "#0088FE", "#FFBB28"];
+const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 
 const CardExpenseSummary = () => {
   const { data: dashboardMetrics, isLoading } = useGetDashboardMetricsQuery();
 
   const expenseSummary = dashboardMetrics?.expenseSummary[0];
+  const expenseByCategorySummary = dashboardMetrics?.expenseByCategorySummary ?? [];
 
-  const expenseByCategorySummary =
-    dashboardMetrics?.expenseByCategorySummary || [];
+  const { expenseCategories, totalExpenses } = useMemo(() => {
+    const sums = expenseByCategorySummary.reduce(
+      (acc: ExpenseSums, item: ExpenseByCategorySummary) => {
+        const category = item.category;
+        acc[category] = (acc[category] ?? 0) + parseInt(item.amount, 10);
+        return acc;
+      },
+      {}
+    );
 
-  const expenseSums = expenseByCategorySummary.reduce(
-    (acc: ExpenseSums, item: ExpenseByCategorySummary) => {
-      const category = item.category + " Expenses";
-      const amount = parseInt(item.amount, 10);
-      if (!acc[category]) acc[category] = 0;
-      acc[category] += amount;
-      return acc;
-    },
-    {}
-  );
-
-  const expenseCategories = Object.entries(expenseSums).map(
-    ([name, value]) => ({
+    const categories = Object.entries(sums).map(([name, value]) => ({
       name,
       value,
-    })
-  );
+    }));
 
-  const totalExpenses = expenseCategories.reduce(
-    (acc, category: { value: number }) => acc + category.value,
-    0
-  );
-  const formattedTotalExpenses = totalExpenses.toFixed(2);
+    const total = categories.reduce((acc, c) => acc + c.value, 0);
+    return { expenseCategories: categories, totalExpenses: total };
+  }, [expenseByCategorySummary]);
 
   return (
-    <div className="row-span-3 bg-white shadow-md rounded-2xl flex flex-col justify-between">
+    <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex flex-col flex-1">
       {isLoading ? (
-        <div className="m-5">Loading...</div>
+        <div className="flex items-center justify-center min-h-[180px]">
+          <div className="text-sm text-gray-400 animate-pulse">Loading...</div>
+        </div>
       ) : (
         <>
           {/* HEADER */}
-          <div>
-            <h2 className="text-lg font-semibold mb-2 px-7 pt-5">
+          <div className="shrink-0">
+            <h2 className="text-base font-semibold px-6 pt-5 pb-3 text-gray-800">
               Expense Summary
             </h2>
-            <hr />
+            <hr className="border-gray-100" />
           </div>
+
           {/* BODY */}
-          <div className="xl:flex justify-between pr-7">
+          <div className="flex items-center gap-3 px-5 py-4">
             {/* CHART */}
-            <div className="relative basis-3/5">
-              <ResponsiveContainer width="100%" height={140}>
+            <div className="relative shrink-0" style={{ width: 120, height: 120 }}>
+              <ResponsiveContainer width={120} height={120}>
                 <PieChart>
                   <Pie
                     data={expenseCategories}
-                    innerRadius={50}
-                    outerRadius={60}
-                    fill="#8884d8"
+                    innerRadius={38}
+                    outerRadius={54}
                     dataKey="value"
                     nameKey="name"
                     cx="50%"
                     cy="50%"
+                    paddingAngle={2}
                   >
-                    {expenseCategories.map((entry, index) => (
+                    {expenseCategories.map((_, index) => (
                       <Cell
                         key={`cell-${index}`}
-                        fill={colors[index % colors.length]}
+                        fill={COLORS[index % COLORS.length]}
                       />
                     ))}
                   </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: "8px",
+                      border: "1px solid #e5e7eb",
+                      fontSize: "11px",
+                    }}
+                    formatter={(value: number) => [
+                      `$${value.toLocaleString()}`,
+                      "Amount",
+                    ]}
+                  />
                 </PieChart>
               </ResponsiveContainer>
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center basis-2/5">
-                <span className="font-bold text-xl">
-                  ${formattedTotalExpenses}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <span className="text-xs font-bold text-gray-700 text-center leading-tight">
+                  ${(totalExpenses / 1000).toFixed(1)}k
                 </span>
               </div>
             </div>
-            {/* LABELS */}
-            <ul className="flex flex-col justify-around items-center xl:items-start py-5 gap-3">
+
+            {/* LEGEND */}
+            <ul className="flex flex-col gap-1.5 flex-1 min-w-0">
               {expenseCategories.map((entry, index) => (
-                <li
-                  key={`legend-${index}`}
-                  className="flex items-center text-xs"
-                >
+                <li key={`legend-${index}`} className="flex items-center gap-2 text-xs text-gray-600">
                   <span
-                    className="mr-2 w-3 h-3 rounded-full"
-                    style={{ backgroundColor: colors[index % colors.length] }}
-                  ></span>
-                  {entry.name}
+                    className="w-2 h-2 rounded-full shrink-0"
+                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                  />
+                  <span className="truncate">{entry.name}</span>
+                  <span className="ml-auto font-medium text-gray-700 shrink-0">
+                    ${(entry.value / 1000).toFixed(1)}k
+                  </span>
                 </li>
               ))}
             </ul>
           </div>
+
           {/* FOOTER */}
-          <div>
-            <hr />
-            {expenseSummary && (
-              <div className="mt-3 flex justify-between items-center px-7 mb-4">
-                <div className="pt-2">
-                  <p className="text-sm">
-                    Average:{" "}
-                    <span className="font-semibold">
-                      ${expenseSummary.totalExpenses.toFixed(2)}
-                    </span>
-                  </p>
-                </div>
-                <span className="flex items-center mt-2">
-                  <TrendingUp className="mr-2 text-green-500" />
+          {expenseSummary && (
+            <>
+              <hr className="border-gray-100 mx-5" />
+              <div className="flex justify-between items-center px-5 py-3 text-xs text-gray-500">
+                <span>
+                  Total:{" "}
+                  <span className="font-semibold text-gray-700">
+                    ${expenseSummary.totalExpenses.toFixed(0)}
+                  </span>
+                </span>
+                <span className="flex items-center text-green-500 font-medium">
+                  <TrendingUp className="w-3.5 h-3.5 mr-1" />
                   30%
                 </span>
               </div>
-            )}
-          </div>
+            </>
+          )}
         </>
       )}
     </div>

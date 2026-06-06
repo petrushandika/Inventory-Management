@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetDashboardMetricsQuery } from "@/state/api";
-import { TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 import React, { useState } from "react";
 import {
   Bar,
@@ -19,128 +19,153 @@ const CardSalesSummary = () => {
 
   const [timeframe, setTimeframe] = useState("weekly");
 
-  const totalValueSum =
-    salesData.reduce((acc, curr) => acc + curr.totalValue, 0) || 0;
+  const totalValueSum = salesData.reduce((acc, curr) => acc + curr.totalValue, 0);
 
   const averageChangePercentage =
-    salesData.reduce((acc, curr, _, array) => {
-      return acc + curr.changePercentage! / array.length;
-    }, 0) || 0;
+    salesData.length > 0
+      ? salesData.reduce((acc, curr) => acc + (curr.changePercentage ?? 0), 0) /
+        salesData.length
+      : 0;
 
-  const highestValueData = salesData.reduce((acc, curr) => {
-    return acc.totalValue > curr.totalValue ? acc : curr;
-  }, salesData[0] || {});
+  const highestValueData = salesData.reduce(
+    (acc, curr) => (acc.totalValue > curr.totalValue ? acc : curr),
+    salesData[0] ?? { totalValue: 0, date: "" }
+  );
 
   const highestValueDate = highestValueData.date
     ? new Date(highestValueData.date).toLocaleDateString("en-US", {
-        month: "numeric",
+        month: "short",
         day: "numeric",
         year: "2-digit",
       })
     : "N/A";
 
+  const isPositive = averageChangePercentage >= 0;
+
   if (isError) {
-    return <div className="m-5">Failed to fetch data</div>;
+    return (
+      <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex items-center justify-center min-h-[460px]">
+        <p className="text-sm text-red-500">Failed to fetch sales data</p>
+      </div>
+    );
   }
 
   return (
-    <div className="row-span-3 xl:row-span-6 bg-white shadow-md rounded-2xl flex flex-col justify-between">
+    <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex flex-col min-h-[460px]">
       {isLoading ? (
-        <div className="m-5">Loading...</div>
+        <div className="flex items-center justify-center flex-1 min-h-[200px]">
+          <div className="text-sm text-gray-400 animate-pulse">Loading...</div>
+        </div>
       ) : (
         <>
           {/* HEADER */}
-          <div>
-            <h2 className="text-lg font-semibold mb-2 px-7 pt-5">
+          <div className="shrink-0">
+            <h2 className="text-base font-semibold px-6 pt-5 pb-3 text-gray-800">
               Sales Summary
             </h2>
-            <hr />
+            <hr className="border-gray-100" />
           </div>
 
           {/* BODY */}
-          <div>
-            {/* BODY HEADER */}
-            <div className="flex justify-between items-center mb-6 px-7 mt-5">
-              <div className="text-lg font-medium">
-                <p className="text-xs text-gray-400">Value</p>
-                <span className="text-2xl font-extrabold">
-                  $
-                  {(totalValueSum / 1000000).toLocaleString("en", {
-                    maximumFractionDigits: 2,
-                  })}
-                  m
-                </span>
-                <span className="text-green-500 text-sm ml-2">
-                  <TrendingUp className="inline w-4 h-4 mr-1" />
-                  {averageChangePercentage.toFixed(2)}%
-                </span>
+          <div className="flex-1 flex flex-col">
+            <div className="flex justify-between items-start px-6 pt-4 pb-3">
+              <div>
+                <p className="text-xs text-gray-400 mb-0.5">Total Value</p>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-extrabold text-gray-800">
+                    $
+                    {(totalValueSum / 1_000_000).toLocaleString("en", {
+                      maximumFractionDigits: 2,
+                    })}
+                    m
+                  </span>
+                  <span
+                    className={`flex items-center text-xs font-medium ${
+                      isPositive ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {isPositive ? (
+                      <TrendingUp className="w-3.5 h-3.5 mr-0.5" />
+                    ) : (
+                      <TrendingDown className="w-3.5 h-3.5 mr-0.5" />
+                    )}
+                    {Math.abs(averageChangePercentage).toFixed(1)}%
+                  </span>
+                </div>
               </div>
               <select
-                className="shadow-sm border border-gray-300 bg-white p-2 rounded"
+                className="text-xs border border-gray-200 bg-white px-2 py-1.5 rounded-lg focus:outline-none focus:border-blue-400 cursor-pointer"
                 value={timeframe}
-                onChange={(e) => {
-                  setTimeframe(e.target.value);
-                }}
+                onChange={(e) => setTimeframe(e.target.value)}
               >
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
                 <option value="monthly">Monthly</option>
               </select>
             </div>
+
             {/* CHART */}
-            <ResponsiveContainer width="100%" height={350} className="px-7">
-              <BarChart
-                data={salesData}
-                margin={{ top: 0, right: 0, left: -25, bottom: 0 }}
-              >
-                <CartesianGrid strokeDasharray="" vertical={false} />
-                <XAxis
-                  dataKey="date"
-                  tickFormatter={(value) => {
-                    const date = new Date(value);
-                    return `${date.getMonth() + 1}/${date.getDate()}`;
-                  }}
-                />
-                <YAxis
-                  tickFormatter={(value) => {
-                    return `$${(value / 1000000).toFixed(0)}m`;
-                  }}
-                  tick={{ fontSize: 12, dx: -1 }}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <Tooltip
-                  formatter={(value: number) => [
-                    `$${value.toLocaleString("en")}`,
-                  ]}
-                  labelFormatter={(label) => {
-                    const date = new Date(label);
-                    return date.toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    });
-                  }}
-                />
-                <Bar
-                  dataKey="totalValue"
-                  fill="#3182ce"
-                  barSize={10}
-                  radius={[10, 10, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+            <div className="px-4 pb-4" style={{ height: 300 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={salesData}
+                  margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <XAxis
+                    dataKey="date"
+                    tick={{ fontSize: 11, fill: "#9ca3af" }}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => {
+                      const date = new Date(value);
+                      return `${date.getMonth() + 1}/${date.getDate()}`;
+                    }}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 11, fill: "#9ca3af" }}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `$${(value / 1_000_000).toFixed(0)}m`}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: "8px",
+                      border: "1px solid #e5e7eb",
+                      fontSize: "12px",
+                    }}
+                    formatter={(value: number) => [
+                      `$${value.toLocaleString("en")}`,
+                      "Sales",
+                    ]}
+                    labelFormatter={(label) =>
+                      new Date(label).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    }
+                  />
+                  <Bar
+                    dataKey="totalValue"
+                    fill="#3b82f6"
+                    barSize={8}
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
           {/* FOOTER */}
-          <div>
-            <hr />
-            <div className="flex justify-between items-center mt-6 text-sm px-7 mb-4">
-              <p>{salesData.length || 0} days</p>
-              <p className="text-sm">
-                Highest Sales Date:{" "}
-                <span className="font-bold">{highestValueDate}</span>
-              </p>
+          <div className="shrink-0">
+            <hr className="border-gray-100" />
+            <div className="flex justify-between items-center px-6 py-3 text-xs text-gray-500">
+              <span>{salesData.length} data points</span>
+              <span>
+                Peak:{" "}
+                <span className="font-semibold text-gray-700">{highestValueDate}</span>
+              </span>
             </div>
           </div>
         </>

@@ -2,6 +2,11 @@ client/node_modules/
 server/node_modules/
 client/dist/
 server/dist/
-client/.env/
-server/.env/
 client/.next/
+
+# Environment variables
+client/.env
+client/.env.local
+client/.env.*.local
+server/.env
+server/.env.local

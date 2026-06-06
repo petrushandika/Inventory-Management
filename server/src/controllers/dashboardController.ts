@@ -1,51 +1,45 @@
-import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { Request, Response, NextFunction } from "express";
+import { prisma } from "../lib/prisma.js";
 
 export const getDashboardMetrics = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   try {
-    const popularProducts = await prisma.products.findMany({
-      take: 15,
-      orderBy: {
-        stockQuantity: "desc",
-      },
-    });
-    const salesSummary = await prisma.salesSummary.findMany({
-      take: 5,
-      orderBy: {
-        date: "desc",
-      },
-    });
-    const purchaseSummary = await prisma.purchaseSummary.findMany({
-      take: 5,
-      orderBy: {
-        date: "desc",
-      },
-    });
-    const expenseSummary = await prisma.expenseSummary.findMany({
-      take: 5,
-      orderBy: {
-        date: "desc",
-      },
-    });
-    const expenseByCategorySummaryRaw = await prisma.expenseByCategory.findMany(
-      {
+    const [
+      popularProducts,
+      salesSummary,
+      purchaseSummary,
+      expenseSummary,
+      expenseByCategoryRaw,
+    ] = await Promise.all([
+      prisma.products.findMany({
+        take: 15,
+        orderBy: { stockQuantity: "desc" },
+      }),
+      prisma.salesSummary.findMany({
         take: 5,
-        orderBy: {
-          date: "desc",
-        },
-      }
-    );
-    const expenseByCategorySummary = expenseByCategorySummaryRaw.map(
-      (item) => ({
-        ...item,
-        amount: item.amount.toString(),
-      })
-    );
+        orderBy: { date: "desc" },
+      }),
+      prisma.purchaseSummary.findMany({
+        take: 5,
+        orderBy: { date: "desc" },
+      }),
+      prisma.expenseSummary.findMany({
+        take: 5,
+        orderBy: { date: "desc" },
+      }),
+      prisma.expenseByCategory.findMany({
+        take: 5,
+        orderBy: { date: "desc" },
+      }),
+    ]);
+
+    const expenseByCategorySummary = expenseByCategoryRaw.map((item) => ({
+      ...item,
+      amount: item.amount.toString(),
+    }));
 
     res.json({
       popularProducts,
@@ -55,6 +49,6 @@ export const getDashboardMetrics = async (
       expenseByCategorySummary,
     });
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving dashboard metrics" });
+    next(error);
   }
 };

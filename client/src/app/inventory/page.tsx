@@ -5,26 +5,26 @@ import Header from "../(components)/Header";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 const columns: GridColDef[] = [
-  { field: "productId", headerName: "ID", width: 90 },
-  { field: "name", headerName: "Product Name", width: 200 },
+  { field: "productId", headerName: "ID", width: 220 },
+  { field: "name", headerName: "Product Name", flex: 1, minWidth: 160 },
   {
     field: "price",
     headerName: "Price",
-    width: 110,
+    width: 120,
     type: "number",
-    valueGetter: (value, row) => `$${row.price}`,
+    valueFormatter: (value) => `$${Number(value).toFixed(2)}`,
   },
   {
     field: "rating",
     headerName: "Rating",
     width: 110,
     type: "number",
-    valueGetter: (value, row) => (row.rating ? row.rating : "N/A"),
+    valueFormatter: (value) => (value != null ? Number(value).toFixed(1) : "N/A"),
   },
   {
     field: "stockQuantity",
-    headerName: "Stock Quantity",
-    width: 150,
+    headerName: "Stock Qty",
+    width: 130,
     type: "number",
   },
 ];
@@ -33,27 +33,48 @@ const Inventory = () => {
   const { data: products, isError, isLoading } = useGetProductsQuery();
 
   if (isLoading) {
-    return <div className="py-4">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center py-20 text-sm text-gray-400 animate-pulse">
+        Loading inventory...
+      </div>
+    );
   }
 
   if (isError || !products) {
     return (
-      <div className="text-center text-red-500 py-4">
-        Failed to fetch products
+      <div className="flex items-center justify-center py-20 text-sm text-red-500">
+        Failed to fetch inventory. Please try again.
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col">
-      <Header name="Inventory" />
-      <DataGrid
-        rows={products}
-        columns={columns}
-        getRowId={(row) => row.productId}
-        checkboxSelection
-        className="bg-white shadow rounded-lg border border-gray-200 mt-5 !text-gray-700"
-      />
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <Header name="Inventory" />
+        <span className="text-sm text-gray-400">{products.length} items</span>
+      </div>
+      <div style={{ height: 600 }}>
+        <DataGrid
+          rows={products}
+          columns={columns}
+          getRowId={(row) => row.productId}
+          checkboxSelection
+          disableRowSelectionOnClick
+          pageSizeOptions={[25, 50, 100]}
+          initialState={{ pagination: { paginationModel: { pageSize: 25 } } }}
+          className="bg-white shadow-sm rounded-xl border border-gray-100 !text-gray-700"
+          sx={{
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "#f9fafb",
+              fontSize: "12px",
+              fontWeight: 600,
+            },
+            "& .MuiDataGrid-cell": { fontSize: "13px" },
+            border: "none",
+          }}
+        />
+      </div>
     </div>
   );
 };

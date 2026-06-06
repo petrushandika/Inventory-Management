@@ -1,46 +1,51 @@
-import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { Request, Response, NextFunction } from "express";
 import { randomUUID } from "crypto";
-
-const prisma = new PrismaClient();
+import { prisma } from "../lib/prisma.js";
 
 export const getProducts = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   try {
     const search = req.query.search?.toString();
     const products = await prisma.products.findMany({
-      where: {
-        name: {
-          contains: search,
-        },
-      },
+      where: search
+        ? { name: { contains: search, mode: "insensitive" } }
+        : undefined,
+      orderBy: { name: "asc" },
     });
     res.json(products);
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving products" });
+    next(error);
   }
 };
 
 export const createProduct = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   try {
     const { productId, image, name, price, rating, stockQuantity } = req.body;
+
+    if (!name || price == null || stockQuantity == null) {
+      res.status(400).json({ message: "name, price, and stockQuantity are required" });
+      return;
+    }
+
     const product = await prisma.products.create({
       data: {
         productId: productId || randomUUID(),
         image,
-        name,
-        price,
-        rating,
-        stockQuantity,
+        name: name.trim(),
+        price: Number(price),
+        rating: rating != null ? Number(rating) : undefined,
+        stockQuantity: Number(stockQuantity),
       },
     });
     res.status(201).json(product);
   } catch (error) {
-    res.status(500).json({ message: "Error creating product" });
+    next(error);
   }
 };

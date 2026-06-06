@@ -36,21 +36,20 @@ const SidebarLink = ({
   return (
     <Link href={href}>
       <div
-        className={`cursor-pointer flex items-center ${
-          isCollapsed ? "justify-center py-4" : "justify-start px-8 py-4"
-        }
-          hover:text-blue-500 hover:bg-blue-100 gap-3 transition-colors ${
-            isActive ? "bg-blue-200" : ""
-          }`}
+        className={`cursor-pointer flex items-center gap-3 transition-colors ${
+          isCollapsed ? "justify-center py-3.5 px-3" : "justify-start px-6 py-3.5"
+        } ${
+          isActive
+            ? "bg-blue-50 text-blue-600 border-r-2 border-blue-600"
+            : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+        }`}
       >
-        <Icon className={`w-6 h-6 ${isActive ? "text-blue-600" : "text-gray-700"}`} />
-        <span
-          className={`${
-            isCollapsed ? "hidden" : "block"
-          } font-medium ${isActive ? "text-blue-600" : "text-gray-700"}`}
-        >
-          {label}
-        </span>
+        <Icon className={`w-5 h-5 shrink-0 ${isActive ? "text-blue-600" : ""}`} />
+        {!isCollapsed && (
+          <span className={`text-sm font-medium ${isActive ? "text-blue-600" : ""}`}>
+            {label}
+          </span>
+        )}
       </div>
     </Link>
   );
@@ -68,41 +67,40 @@ const Sidebar = () => {
 
   const sidebarClassNames = `fixed flex flex-col ${
     isSiderbarCollapsed ? "w-0 md:w-16" : "w-72 md:w-64"
-  } bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40`;
+  } bg-white transition-all duration-300 overflow-hidden h-full shadow-sm border-r border-gray-100 z-40`;
 
   return (
     <div className={sidebarClassNames}>
       {/* Top Logo */}
       <div
-        className={`flex gap-3 justify-between md:justify-normal items-center pt-8 ${
-          isSiderbarCollapsed ? "px-5" : "px-8"
+        className={`flex items-center justify-between py-5 border-b border-gray-100 ${
+          isSiderbarCollapsed ? "px-3" : "px-6"
         }`}
       >
-        <div>
+        <div className={`flex items-center gap-2.5 ${isSiderbarCollapsed ? "justify-center w-full" : ""}`}>
           <Image
             src="https://res.cloudinary.com/dqcyabvc2/image/upload/v1749802554/logo_w7rgwe.png"
-            width={20}
-            height={20}
+            width={28}
+            height={28}
             alt="Logo"
+            className="shrink-0"
           />
+          {!isSiderbarCollapsed && (
+            <h1 className="font-bold text-xl text-gray-800">XStock</h1>
+          )}
         </div>
-        <h1
-          className={`${
-            isSiderbarCollapsed ? "hidden" : "block"
-          } font-extrabold text-2xl`}
-        >
-          XStock
-        </h1>
-        <button
-          className="md:hidden px-3 py-3 bg-gray-100 rounded-full hover:bg-blue-100"
-          onClick={toggleSidebar}
-        >
-          <Menu className="w-4 h-4" />
-        </button>
+        {!isSiderbarCollapsed && (
+          <button
+            className="md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors"
+            onClick={toggleSidebar}
+          >
+            <Menu className="w-4 h-4 text-gray-500" />
+          </button>
+        )}
       </div>
 
-      {/* Links */}
-      <div className="flex-grow mt-8">
+      {/* Navigation Links */}
+      <nav className="flex-1 py-4">
         <SidebarLink
           href="/dashboard"
           icon={Layout}
@@ -128,23 +126,25 @@ const Sidebar = () => {
           isCollapsed={isSiderbarCollapsed}
         />
         <SidebarLink
-          href="/settings"
-          icon={SlidersHorizontal}
-          label="Settings"
-          isCollapsed={isSiderbarCollapsed}
-        />
-        <SidebarLink
           href="/expenses"
           icon={CircleDollarSign}
           label="Expenses"
           isCollapsed={isSiderbarCollapsed}
         />
-      </div>
+        <SidebarLink
+          href="/settings"
+          icon={SlidersHorizontal}
+          label="Settings"
+          isCollapsed={isSiderbarCollapsed}
+        />
+      </nav>
 
       {/* Footer */}
-      <div className={`${isSiderbarCollapsed ? "hidden" : "block"} mb-10`}>
-        <p className="text-center text-xs text-gray-500">&copy; 2020 XStock</p>
-      </div>
+      {!isSiderbarCollapsed && (
+        <div className="pb-6 px-6 border-t border-gray-100 pt-4">
+          <p className="text-xs text-gray-400">&copy; 2025 XStock</p>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,34 +1,30 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Users {
-  userId String @id
-  image String?
+  userId String  @id
+  image  String?
   name   String
-  email  String
+  email  String  @unique
 }
 
 model Products {
   productId     String      @id
-  image String?
+  image         String?
   name          String
   price         Float
   rating        Float?
   stockQuantity Int
   Sales         Sales[]
   Purchases     Purchases[]
+
+  @@index([name])
+  @@index([stockQuantity])
 }
 
 model Sales {
@@ -39,6 +35,9 @@ model Sales {
   unitPrice   Float
   totalAmount Float
   product     Products @relation(fields: [productId], references: [productId])
+
+  @@index([productId])
+  @@index([timestamp])
 }
 
 model Purchases {
@@ -49,6 +48,9 @@ model Purchases {
   unitCost   Float
   totalCost  Float
   product    Products @relation(fields: [productId], references: [productId])
+
+  @@index([productId])
+  @@index([timestamp])
 }
 
 model Expenses {
@@ -56,6 +58,9 @@ model Expenses {
   category  String
   amount    Float
   timestamp DateTime
+
+  @@index([category])
+  @@index([timestamp])
 }
 
 model SalesSummary {
@@ -63,6 +68,8 @@ model SalesSummary {
   totalValue       Float
   changePercentage Float?
   date             DateTime
+
+  @@index([date])
 }
 
 model PurchaseSummary {
@@ -70,6 +77,8 @@ model PurchaseSummary {
   totalPurchased    Float
   changePercentage  Float?
   date              DateTime
+
+  @@index([date])
 }
 
 model ExpenseSummary {
@@ -77,6 +86,8 @@ model ExpenseSummary {
   totalExpenses     Float
   date              DateTime
   ExpenseByCategory ExpenseByCategory[]
+
+  @@index([date])
 }
 
 model ExpenseByCategory {
@@ -86,4 +97,8 @@ model ExpenseByCategory {
   amount              BigInt
   date                DateTime
   expenseSummary      ExpenseSummary @relation(fields: [expenseSummaryId], references: [expenseSummaryId])
+
+  @@index([expenseSummaryId])
+  @@index([category])
+  @@index([date])
 }
