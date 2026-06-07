@@ -154,10 +154,39 @@ export interface UpdateSupplier {
   address?: string;
 }
 
+export type OrderStatus = "Draft" | "Ordered" | "Received" | "Cancelled";
+
+export interface PurchaseOrderItem {
+  itemId: string;
+  orderId: string;
+  productId: string;
+  quantity: number;
+  unitCost: number;
+  product?: Pick<Product, "productId" | "name" | "stockQuantity" | "price">;
+}
+
+export interface PurchaseOrder {
+  orderId: string;
+  supplierId?: string;
+  status: OrderStatus;
+  notes?: string;
+  totalCost: number;
+  createdAt: string;
+  updatedAt: string;
+  supplier?: Pick<Supplier, "supplierId" | "name">;
+  items: PurchaseOrderItem[];
+}
+
+export interface NewPurchaseOrder {
+  supplierId?: string;
+  notes?: string;
+  items: { productId: string; quantity: number; unitCost: number }[];
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
   reducerPath: "api",
-  tagTypes: ["DashboardMetrics", "Products", "Users", "Expenses", "Categories", "Suppliers"],
+  tagTypes: ["DashboardMetrics", "Products", "Users", "Expenses", "Categories", "Suppliers", "PurchaseOrders"],
   endpoints: (build) => ({
     login: build.mutation<{ user: User }, { username: string; password: string }>({
       query: (body) => ({ url: "/auth/login", method: "POST", body }),
@@ -245,6 +274,26 @@ export const api = createApi({
       query: (supplierId) => ({ url: `/suppliers/${supplierId}`, method: "DELETE" }),
       invalidatesTags: ["Suppliers"],
     }),
+    getPurchaseOrders: build.query<PurchaseOrder[], OrderStatus | void>({
+      query: (status) => ({ url: "/purchase-orders", params: status ? { status } : {} }),
+      providesTags: ["PurchaseOrders"],
+    }),
+    getPurchaseOrder: build.query<PurchaseOrder, string>({
+      query: (orderId) => `/purchase-orders/${orderId}`,
+      providesTags: ["PurchaseOrders"],
+    }),
+    createPurchaseOrder: build.mutation<PurchaseOrder, NewPurchaseOrder>({
+      query: (body) => ({ url: "/purchase-orders", method: "POST", body }),
+      invalidatesTags: ["PurchaseOrders"],
+    }),
+    updatePurchaseOrder: build.mutation<PurchaseOrder, { orderId: string; status?: OrderStatus; notes?: string; supplierId?: string }>({
+      query: ({ orderId, ...body }) => ({ url: `/purchase-orders/${orderId}`, method: "PUT", body }),
+      invalidatesTags: ["PurchaseOrders", "Products", "DashboardMetrics"],
+    }),
+    deletePurchaseOrder: build.mutation<void, string>({
+      query: (orderId) => ({ url: `/purchase-orders/${orderId}`, method: "DELETE" }),
+      invalidatesTags: ["PurchaseOrders"],
+    }),
   }),
 });
 
@@ -268,4 +317,9 @@ export const {
   useCreateSupplierMutation,
   useUpdateSupplierMutation,
   useDeleteSupplierMutation,
+  useGetPurchaseOrdersQuery,
+  useGetPurchaseOrderQuery,
+  useCreatePurchaseOrderMutation,
+  useUpdatePurchaseOrderMutation,
+  useDeletePurchaseOrderMutation,
 } = api;

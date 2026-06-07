@@ -2,12 +2,14 @@
 
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsDarkMode, setIsSidebarCollapsed } from "@/state";
-import { useGetUsersQuery } from "@/state/api";
-import { Bell, Menu, Moon, Search, Settings, Sun } from "lucide-react";
+import { useGetProductsQuery, useGetUsersQuery } from "@/state/api";
+import { AlertTriangle, Bell, Menu, Moon, Search, Settings, Sun, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+const LOW_STOCK_THRESHOLD = 20;
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -15,11 +17,25 @@ const Navbar = () => {
   const isSidebarCollapsed = useAppSelector((state) => state.global.isSidebarCollapsed);
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
   const [searchValue, setSearchValue] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
+  const bellRef = useRef<HTMLDivElement>(null);
 
   const toggleSidebar = () => dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
   const toggleDarkMode = () => dispatch(setIsDarkMode(!isDarkMode));
 
   const { data: users, isLoading, isError } = useGetUsersQuery();
+  const { data: products = [] } = useGetProductsQuery();
+  const lowStockProducts = products.filter((p) => p.stockQuantity <= LOW_STOCK_THRESHOLD);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (bellRef.current && !bellRef.current.contains(e.target as Node)) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
   const user = users?.[0];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -62,10 +78,58 @@ const Navbar = () => {
           {isDarkMode ? <Sun className="text-gray-500" size={18} /> : <Moon className="text-gray-500" size={18} />}
         </button>
 
-        <div className="relative">
-          <button className="p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Notifications">
+        <div className="relative" ref={bellRef}>
+          <button
+            onClick={() => setShowNotifications((v) => !v)}
+            className="relative p-2 rounded-full hover:bg-gray-100 transition-colors"
+            aria-label="Notifications"
+          >
             <Bell className="text-gray-500" size={18} />
+            {lowStockProducts.length > 0 && (
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+            )}
           </button>
+
+          {showNotifications && (
+            <div className="absolute right-0 top-10 w-72 bg-white rounded-xl border border-gray-200 shadow-lg z-50 overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                <span className="text-sm font-semibold text-gray-700">Low Stock Alerts</span>
+                <button onClick={() => setShowNotifications(false)} className="text-gray-400 hover:text-gray-600">
+                  <X size={14} />
+                </button>
+              </div>
+              {lowStockProducts.length === 0 ? (
+                <p className="text-sm text-gray-400 text-center py-6">All products are well-stocked.</p>
+              ) : (
+                <ul className="divide-y divide-gray-100 max-h-64 overflow-y-auto">
+                  {lowStockProducts.map((p) => (
+                    <li key={p.productId}>
+                      <Link
+                        href={`/products/${p.productId}/edit`}
+                        onClick={() => setShowNotifications(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition"
+                      >
+                        <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-gray-800 truncate">{p.name}</p>
+                          <p className="text-xs text-red-500">{p.stockQuantity} units left</p>
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="px-4 py-2 border-t border-gray-100">
+                <Link
+                  href="/inventory"
+                  onClick={() => setShowNotifications(false)}
+                  className="text-xs text-blue-600 hover:underline"
+                >
+                  View all inventory →
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
 
         <Link href="/settings" className="p-2 rounded-full hover:bg-gray-100 transition-colors hidden sm:flex" aria-label="Settings">

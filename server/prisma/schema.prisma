@@ -37,13 +37,14 @@ model Categories {
 }
 
 model Suppliers {
-  supplierId String      @id
-  name       String
-  email      String?
-  phone      String?
-  address    String?
-  createdAt  DateTime    @default(now())
-  Purchases  Purchases[]
+  supplierId     String           @id
+  name           String
+  email          String?
+  phone          String?
+  address        String?
+  createdAt      DateTime         @default(now())
+  Purchases      Purchases[]
+  PurchaseOrders PurchaseOrders[]
 
   @@index([name])
 }
@@ -57,8 +58,9 @@ model Products {
   stockQuantity Int
   categoryId    String?
   category      Categories? @relation(fields: [categoryId], references: [categoryId])
-  Sales         Sales[]
-  Purchases     Purchases[]
+  Sales               Sales[]
+  Purchases           Purchases[]
+  PurchaseOrderItems  PurchaseOrderItems[]
 
   @@index([name])
   @@index([stockQuantity])
@@ -142,4 +144,40 @@ model ExpenseByCategory {
   @@index([expenseSummaryId])
   @@index([category])
   @@index([date])
+}
+
+enum OrderStatus {
+  Draft
+  Ordered
+  Received
+  Cancelled
+}
+
+model PurchaseOrders {
+  orderId    String               @id
+  supplierId String?
+  status     OrderStatus          @default(Draft)
+  notes      String?
+  totalCost  Float                @default(0)
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  supplier   Suppliers?           @relation(fields: [supplierId], references: [supplierId])
+  items      PurchaseOrderItems[]
+
+  @@index([status])
+  @@index([supplierId])
+  @@index([createdAt])
+}
+
+model PurchaseOrderItems {
+  itemId    String         @id
+  orderId   String
+  productId String
+  quantity  Int
+  unitCost  Float
+  order     PurchaseOrders @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
+  product   Products       @relation(fields: [productId], references: [productId])
+
+  @@index([orderId])
+  @@index([productId])
 }

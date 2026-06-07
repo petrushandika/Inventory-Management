@@ -1,7 +1,8 @@
 "use client";
 
 import { useDeleteProductMutation, useGetProductsQuery, Product } from "@/state/api";
-import { Edit2, PlusCircle, Search, Trash2 } from "lucide-react";
+import { Download, Edit2, PlusCircle, Search, Trash2 } from "lucide-react";
+import { exportCsv } from "@/lib/exportCsv";
 import { useCallback, useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Header from "@/app/(components)/Header";
@@ -75,6 +76,12 @@ const Products = () => {
             <input className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 w-44 sm:w-52 transition-all"
               placeholder="Search products…" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           </div>
+          <button
+            onClick={() => exportCsv(allSorted.map((p) => ({ name: p.name, price: p.price, stock: p.stockQuantity, rating: p.rating ?? "", category: p.categoryId ?? "" })), "products")}
+            className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition shrink-0"
+          >
+            <Download className="w-4 h-4" /><span className="hidden sm:inline">Export</span>
+          </button>
           <button onClick={() => router.push("/products/new")}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors shrink-0">
             <PlusCircle className="w-4 h-4" /><span className="hidden sm:inline">Add Product</span>

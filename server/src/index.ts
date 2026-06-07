@@ -10,6 +10,7 @@ import userRoutes from "./routes/userRoutes.js";
 import expenseRoutes from "./routes/expenseRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import supplierRoutes from "./routes/supplierRoutes.js";
+import purchaseOrderRoutes from "./routes/purchaseOrderRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 dotenv.config();
@@ -39,6 +40,7 @@ app.use("/users", userRoutes);
 app.use("/expenses", expenseRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/suppliers", supplierRoutes);
+app.use("/purchase-orders", purchaseOrderRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

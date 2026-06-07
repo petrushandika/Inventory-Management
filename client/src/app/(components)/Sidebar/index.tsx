@@ -11,6 +11,7 @@ import {
   LogOut,
   LucideIcon,
   Menu,
+  ShoppingCart,
   SlidersHorizontal,
   Tag,
   Truck,
@@ -121,6 +122,7 @@ const Sidebar = () => {
           <SidebarLink href="/users"      icon={User}             label="Users"      isCollapsed={isSidebarCollapsed} />
           <SidebarLink href="/categories" icon={Tag}              label="Categories" isCollapsed={isSidebarCollapsed} />
           <SidebarLink href="/suppliers"  icon={Truck}            label="Suppliers"  isCollapsed={isSidebarCollapsed} />
+          <SidebarLink href="/purchases"  icon={ShoppingCart}     label="Purchases"  isCollapsed={isSidebarCollapsed} />
           <SidebarLink href="/expenses"   icon={CircleDollarSign} label="Expenses"   isCollapsed={isSidebarCollapsed} />
           <SidebarLink href="/settings"   icon={SlidersHorizontal}label="Settings"   isCollapsed={isSidebarCollapsed} />
         </nav>

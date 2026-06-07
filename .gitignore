@@ -10,3 +10,5 @@ client/.env.local
 client/.env.*.local
 server/.env
 server/.env.local
+.cursor
+.claude
