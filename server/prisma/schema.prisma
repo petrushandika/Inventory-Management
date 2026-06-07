@@ -17,6 +17,8 @@ model Users {
   image     String?
   name      String
   email     String   @unique
+  username  String?  @unique
+  password  String?
   role      UserRole @default(Staff)
   createdAt DateTime @default(now())
 

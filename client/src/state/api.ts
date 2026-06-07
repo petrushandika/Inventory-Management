@@ -158,6 +158,9 @@ export const api = createApi({
   reducerPath: "api",
   tagTypes: ["DashboardMetrics", "Products", "Users", "Expenses", "Categories", "Suppliers"],
   endpoints: (build) => ({
+    login: build.mutation<{ user: User }, { username: string; password: string }>({
+      query: (body) => ({ url: "/auth/login", method: "POST", body }),
+    }),
     getDashboardMetrics: build.query<DashboardMetrics, void>({
       query: () => "/dashboard",
       providesTags: ["DashboardMetrics"],
@@ -245,6 +248,7 @@ export const api = createApi({
 });
 
 export const {
+  useLoginMutation,
   useGetDashboardMetricsQuery,
   useGetProductsQuery,
   useCreateProductMutation,

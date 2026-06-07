@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import bcrypt from "bcryptjs";
 import fs from "fs";
 import path from "path";
 import "dotenv/config";
@@ -69,6 +70,22 @@ async function main() {
   for (const fileName of insertOrder) {
     await seedModel(fileName, dataDirectory);
   }
+
+  // Seed admin account
+  const adminPassword = await bcrypt.hash("admin", 10);
+  await prisma.users.upsert({
+    where: { email: "admin@xstock.com" },
+    update: { username: "admin", password: adminPassword },
+    create: {
+      userId: "00000000-0000-0000-0000-000000000001",
+      name: "Admin",
+      email: "admin@xstock.com",
+      username: "admin",
+      password: adminPassword,
+      role: "Admin",
+    },
+  });
+  console.log("Seeded admin user (username: admin / password: admin)");
 
   console.log("\nSeeding complete!");
 }
