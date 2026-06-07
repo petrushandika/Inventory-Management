@@ -285,6 +285,14 @@
   box-sizing: border-box;
 }
 
+button,
+[role="button"],
+a,
+label[for],
+select {
+  cursor: pointer;
+}
+
 html,
 body,
 #root,

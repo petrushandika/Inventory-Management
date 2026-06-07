@@ -6,6 +6,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Breadcrumb from "@/app/(components)/Breadcrumb";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const LocationPicker = dynamic(() => import("@/app/(components)/LocationPicker"), { ssr: false });
 
 type FormState = { name: string; email: string; phone: string; address: string };
 
@@ -96,15 +99,16 @@ const NewSupplierPage = () => {
               </div>
             </div>
 
-            {/* Address */}
+            <hr className="border-gray-100" />
+
+            {/* Location */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
-              <textarea
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Location / Address
+              </label>
+              <LocationPicker
                 value={form.address}
-                onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
-                placeholder="123 Main Street, City, Country"
-                rows={3}
-                className={`${inputCls} resize-none`}
+                onChange={(address) => setForm((f) => ({ ...f, address }))}
               />
             </div>
           </div>

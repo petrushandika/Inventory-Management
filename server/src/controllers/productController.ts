@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { randomUUID } from "crypto";
 import { prisma } from "../lib/prisma.js";
+import { uploadImage, deleteImage, publicIdFromUrl } from "../lib/cloudinary.js";
+
+const isBase64Image = (s: string) => s.startsWith("data:image/");
+const isCloudinaryUrl = (s: string) => s.includes("res.cloudinary.com");
 
 export const getProducts = async (
   req: Request,
@@ -42,10 +46,17 @@ export const createProduct = async (
       return;
     }
 
+    let imageUrl: string | null = null;
+    if (image && isBase64Image(image)) {
+      imageUrl = await uploadImage(image, "inventory/products");
+    } else if (image) {
+      imageUrl = image;
+    }
+
     const product = await prisma.products.create({
       data: {
         productId: productId || randomUUID(),
-        image: image ?? null,
+        image: imageUrl,
         name: name.trim(),
         price: Number(price),
         rating: rating != null ? Math.min(5, Math.max(0, Number(rating))) : undefined,
@@ -68,10 +79,34 @@ export const updateProduct = async (
     const { productId } = req.params;
     const { image, name, price, rating, stockQuantity, categoryId } = req.body;
 
+    let imageUrl: string | undefined = undefined;
+
+    if (image !== undefined) {
+      if (image === null || image === "") {
+        // caller wants to remove image — delete old one from Cloudinary if present
+        const existing = await prisma.products.findUnique({ where: { productId }, select: { image: true } });
+        if (existing?.image && isCloudinaryUrl(existing.image)) {
+          const pid = publicIdFromUrl(existing.image);
+          if (pid) await deleteImage(pid).catch(() => {});
+        }
+        imageUrl = "";
+      } else if (isBase64Image(image)) {
+        // new base64 image — upload and delete old
+        const existing = await prisma.products.findUnique({ where: { productId }, select: { image: true } });
+        if (existing?.image && isCloudinaryUrl(existing.image)) {
+          const pid = publicIdFromUrl(existing.image);
+          if (pid) await deleteImage(pid).catch(() => {});
+        }
+        imageUrl = await uploadImage(image, "inventory/products");
+      } else {
+        imageUrl = image;
+      }
+    }
+
     const product = await prisma.products.update({
       where: { productId },
       data: {
-        ...(image !== undefined && { image }),
+        ...(imageUrl !== undefined && { image: imageUrl || null }),
         ...(name?.trim() && { name: name.trim() }),
         ...(price != null && !isNaN(Number(price)) && { price: Math.max(0, Number(price)) }),
         ...(rating != null && { rating: Math.min(5, Math.max(0, Number(rating))) }),
@@ -92,6 +127,14 @@ export const deleteProduct = async (
 ): Promise<void> => {
   try {
     const { productId } = req.params;
+
+    // delete image from Cloudinary before removing record
+    const product = await prisma.products.findUnique({ where: { productId }, select: { image: true } });
+    if (product?.image && isCloudinaryUrl(product.image)) {
+      const pid = publicIdFromUrl(product.image);
+      if (pid) await deleteImage(pid).catch(() => {});
+    }
+
     await prisma.products.delete({ where: { productId } });
     res.status(204).send();
   } catch (error) {
