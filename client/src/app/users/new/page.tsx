@@ -1,8 +1,8 @@
 "use client";
 
 import { useCreateUserMutation, NewUser, UserRole } from "@/state/api";
-import { AlertCircle, Check } from "lucide-react";
-import { useState } from "react";
+import { AlertCircle, Camera, Check, X } from "lucide-react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Breadcrumb from "@/app/(components)/Breadcrumb";
 import Link from "next/link";
@@ -15,20 +15,45 @@ const ROLES: { value: UserRole; label: string; desc: string; badge: string }[] =
 
 const inputCls = "w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-colors placeholder:text-gray-400";
 
+const getBase64 = (file: File): Promise<string> =>
+  new Promise((res) => { const r = new FileReader(); r.onloadend = () => res(r.result as string); r.readAsDataURL(file); });
+
 const NewUserPage = () => {
   const router = useRouter();
+  const fileRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState<{ name: string; email: string; role: UserRole }>({ name: "", email: "", role: "Staff" });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   const [createUser] = useCreateUserMutation();
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const clearImage = () => {
+    setImageFile(null);
+    setImagePreview("");
+    if (fileRef.current) fileRef.current.value = "";
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
     try {
-      const payload: NewUser = { name: form.name.trim(), email: form.email.trim().toLowerCase(), role: form.role };
+      const imageBase64 = imageFile ? await getBase64(imageFile) : undefined;
+      const payload: NewUser = {
+        name: form.name.trim(),
+        email: form.email.trim().toLowerCase(),
+        role: form.role,
+        ...(imageBase64 && { image: imageBase64 }),
+      };
       await createUser(payload).unwrap();
       router.push("/users");
     } catch {
@@ -55,6 +80,45 @@ const NewUserPage = () => {
                 <AlertCircle className="w-4 h-4 shrink-0" /><span>{error}</span>
               </div>
             )}
+
+            {/* Avatar upload */}
+            <div className="flex items-center gap-5">
+              <div className="relative shrink-0">
+                <div
+                  onClick={() => fileRef.current?.click()}
+                  className="w-20 h-20 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 hover:border-blue-400 flex items-center justify-center overflow-hidden cursor-pointer transition-colors group"
+                >
+                  {imagePreview ? (
+                    <img src={imagePreview} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <Camera className="w-6 h-6 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                  )}
+                </div>
+                {imagePreview && (
+                  <button
+                    type="button"
+                    onClick={clearImage}
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center shadow"
+                  >
+                    <X className="w-3 h-3 text-white" />
+                  </button>
+                )}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-700">Profile Photo</p>
+                <p className="text-xs text-gray-400 mt-0.5">JPG, PNG up to 5MB. Will be uploaded to Cloudinary.</p>
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="mt-2 text-xs text-blue-600 hover:underline"
+                >
+                  {imagePreview ? "Change photo" : "Upload photo"}
+                </button>
+              </div>
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+            </div>
+
+            <hr className="border-gray-100" />
 
             {/* Name & Email */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

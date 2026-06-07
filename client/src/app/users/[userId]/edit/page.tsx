@@ -1,11 +1,12 @@
 "use client";
 
 import { useGetUsersQuery, useUpdateUserMutation, UserRole } from "@/state/api";
-import { AlertCircle, Check } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AlertCircle, Camera, Check, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Breadcrumb from "@/app/(components)/Breadcrumb";
 import Link from "next/link";
+import Image from "next/image";
 
 const ROLES: { value: UserRole; label: string; desc: string; badge: string }[] = [
   { value: "Admin",   label: "Admin",   desc: "Full access to all features including user management.", badge: "bg-purple-100 text-purple-700" },
@@ -15,9 +16,13 @@ const ROLES: { value: UserRole; label: string; desc: string; badge: string }[] =
 
 const inputCls = "w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-colors placeholder:text-gray-400";
 
+const getBase64 = (file: File): Promise<string> =>
+  new Promise((res) => { const r = new FileReader(); r.onloadend = () => res(r.result as string); r.readAsDataURL(file); });
+
 const EditUserPage = () => {
   const router = useRouter();
   const { userId } = useParams<{ userId: string }>();
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const { data: users, isLoading: loadingUsers } = useGetUsersQuery();
   const [updateUser] = useUpdateUserMutation();
@@ -25,6 +30,9 @@ const EditUserPage = () => {
   const [form, setForm] = useState<{ name: string; email: string; role: UserRole }>({
     name: "", email: "", role: "Staff",
   });
+  const [existingImage, setExistingImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
@@ -34,19 +42,42 @@ const EditUserPage = () => {
     const user = users.find((u) => u.userId === userId);
     if (!user) { router.replace("/users"); return; }
     setForm({ name: user.name, email: user.email, role: user.role });
+    setExistingImage(user.image ?? null);
     setReady(true);
   }, [users, userId, router]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const clearImage = () => {
+    setImageFile(null);
+    setImagePreview("");
+    setExistingImage(null);
+    if (fileRef.current) fileRef.current.value = "";
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
     try {
+      let imagePayload: string | undefined = undefined;
+      if (imageFile) {
+        imagePayload = await getBase64(imageFile);
+      } else if (existingImage === null) {
+        // user explicitly removed the image
+        imagePayload = "";
+      }
       await updateUser({
         userId,
         name:  form.name.trim(),
         email: form.email.trim().toLowerCase(),
         role:  form.role,
+        ...(imagePayload !== undefined && { image: imagePayload }),
       }).unwrap();
       router.push("/users");
     } catch {
@@ -54,6 +85,8 @@ const EditUserPage = () => {
       setIsSubmitting(false);
     }
   };
+
+  const displayPreview = imagePreview || existingImage || "";
 
   if (loadingUsers || !ready) {
     return (
@@ -81,6 +114,61 @@ const EditUserPage = () => {
                 <AlertCircle className="w-4 h-4 shrink-0" /><span>{error}</span>
               </div>
             )}
+
+            {/* Avatar upload */}
+            <div className="flex items-center gap-5">
+              <div className="relative shrink-0">
+                <div
+                  onClick={() => fileRef.current?.click()}
+                  className="w-20 h-20 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 hover:border-blue-400 flex items-center justify-center overflow-hidden cursor-pointer transition-colors group"
+                >
+                  {displayPreview ? (
+                    <Image
+                      src={displayPreview}
+                      alt="Avatar"
+                      width={80}
+                      height={80}
+                      unoptimized
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-2xl font-bold text-blue-400 group-hover:opacity-60 transition-opacity">
+                      {form.name?.[0]?.toUpperCase() ?? "?"}
+                    </span>
+                  )}
+                </div>
+                {displayPreview && (
+                  <button
+                    type="button"
+                    onClick={clearImage}
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center shadow"
+                  >
+                    <X className="w-3 h-3 text-white" />
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="absolute bottom-0 right-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center shadow"
+                >
+                  <Camera className="w-3.5 h-3.5 text-white" />
+                </button>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-700">Profile Photo</p>
+                <p className="text-xs text-gray-400 mt-0.5">JPG, PNG up to 5MB. Stored on Cloudinary.</p>
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="mt-2 text-xs text-blue-600 hover:underline"
+                >
+                  {displayPreview ? "Change photo" : "Upload photo"}
+                </button>
+              </div>
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+            </div>
+
+            <hr className="border-gray-100" />
 
             {/* Name & Email */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
