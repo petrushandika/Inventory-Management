@@ -1,7 +1,8 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/app/redux";
-import { setIsSidebarCollapsed } from "@/state";
+import { setIsDarkMode, setIsSidebarCollapsed } from "@/state";
+import { api } from "@/state/api";
 import {
   Archive,
   CircleDollarSign,
@@ -61,6 +62,10 @@ const Sidebar = () => {
   const closeSidebar = () => dispatch(setIsSidebarCollapsed(true));
 
   const handleLogout = () => {
+    // Reset all RTK Query cache and Redux persisted state
+    dispatch(api.util.resetApiState());
+    dispatch(setIsDarkMode(false));
+    dispatch(setIsSidebarCollapsed(false));
     router.push("/login");
   };
 
@@ -108,16 +113,16 @@ const Sidebar = () => {
           )}
         </div>
 
-        {/* Navigation Links — scrollable if content overflows */}
+        {/* Navigation */}
         <nav className="flex-1 py-4 overflow-y-auto overflow-x-hidden">
-          <SidebarLink href="/dashboard" icon={Layout} label="Dashboard" isCollapsed={isSidebarCollapsed} />
-          <SidebarLink href="/inventory" icon={Archive} label="Inventory" isCollapsed={isSidebarCollapsed} />
-          <SidebarLink href="/products" icon={Clipboard} label="Products" isCollapsed={isSidebarCollapsed} />
-          <SidebarLink href="/users" icon={User} label="Users" isCollapsed={isSidebarCollapsed} />
-          <SidebarLink href="/categories" icon={Tag} label="Categories" isCollapsed={isSidebarCollapsed} />
-          <SidebarLink href="/suppliers" icon={Truck} label="Suppliers" isCollapsed={isSidebarCollapsed} />
-          <SidebarLink href="/expenses" icon={CircleDollarSign} label="Expenses" isCollapsed={isSidebarCollapsed} />
-          <SidebarLink href="/settings" icon={SlidersHorizontal} label="Settings" isCollapsed={isSidebarCollapsed} />
+          <SidebarLink href="/dashboard"  icon={Layout}           label="Dashboard"  isCollapsed={isSidebarCollapsed} />
+          <SidebarLink href="/inventory"  icon={Archive}          label="Inventory"  isCollapsed={isSidebarCollapsed} />
+          <SidebarLink href="/products"   icon={Clipboard}        label="Products"   isCollapsed={isSidebarCollapsed} />
+          <SidebarLink href="/users"      icon={User}             label="Users"      isCollapsed={isSidebarCollapsed} />
+          <SidebarLink href="/categories" icon={Tag}              label="Categories" isCollapsed={isSidebarCollapsed} />
+          <SidebarLink href="/suppliers"  icon={Truck}            label="Suppliers"  isCollapsed={isSidebarCollapsed} />
+          <SidebarLink href="/expenses"   icon={CircleDollarSign} label="Expenses"   isCollapsed={isSidebarCollapsed} />
+          <SidebarLink href="/settings"   icon={SlidersHorizontal}label="Settings"   isCollapsed={isSidebarCollapsed} />
         </nav>
 
         {/* Footer — Logout */}
@@ -129,12 +134,10 @@ const Sidebar = () => {
             }`}
           >
             <LogOut className="w-5 h-5 shrink-0" />
-            {!isSidebarCollapsed && (
-              <span className="text-sm font-medium">Log Out</span>
-            )}
+            {!isSidebarCollapsed && <span className="text-sm font-medium">Log Out</span>}
           </button>
           {!isSidebarCollapsed && (
-            <p className="text-xs text-gray-400 mt-3 px-3">&copy; 2025 XStock. All rights reserved.</p>
+            <p className="text-xs text-gray-400 mt-3 px-3">&copy; {new Date().getFullYear()} XStock. All rights reserved.</p>
           )}
         </div>
       </div>

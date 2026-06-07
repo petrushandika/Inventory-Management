@@ -53,7 +53,7 @@ const Expenses = () => {
 
   const totalAmount = aggregatedData.reduce((sum, d) => sum + d.amount, 0);
 
-  if (isLoading) return <div className="flex items-center justify-center py-20 text-sm text-gray-400 animate-pulse">Loading expenses...</div>;
+  if (isLoading) return <div className="flex items-center justify-center py-32"><div className="w-8 h-8 rounded-full border-2 border-gray-200 border-t-blue-500 animate-spin" /></div>;
   if (isError || !expensesData) return <div className="flex items-center justify-center py-20 text-sm text-red-500">Failed to load expenses.</div>;
 
   const categories = [...new Set(expenses.map((e) => e.category))];

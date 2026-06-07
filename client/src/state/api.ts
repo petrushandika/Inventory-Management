@@ -28,6 +28,7 @@ export interface UpdateProduct {
   rating?: number;
   stockQuantity?: number;
   image?: string;
+  categoryId?: string;
 }
 
 export interface SalesSummary {

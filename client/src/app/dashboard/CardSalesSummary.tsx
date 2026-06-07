@@ -29,17 +29,17 @@ const CardSalesSummary = () => {
 
   if (isError) {
     return (
-      <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex items-center justify-center min-h-[460px]">
+      <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex items-center justify-center h-full">
         <p className="text-sm text-red-500">Failed to load sales data</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex flex-col min-h-[460px]">
+    <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex flex-col h-full">
       {isLoading ? (
         <div className="flex items-center justify-center flex-1">
-          <div className="text-sm text-gray-400 animate-pulse">Loading...</div>
+          <div className="w-8 h-8 rounded-full border-2 border-gray-200 border-t-blue-500 animate-spin" />
         </div>
       ) : (
         <>

@@ -1,10 +1,10 @@
 [
-  { "categoryId": "cat1", "name": "Elektronik", "description": "Perangkat elektronik dan gadget", "color": "#3b82f6" },
-  { "categoryId": "cat2", "name": "Pakaian", "description": "Pakaian dan aksesoris fashion", "color": "#ec4899" },
-  { "categoryId": "cat3", "name": "Makanan & Minuman", "description": "Produk makanan dan minuman", "color": "#f59e0b" },
-  { "categoryId": "cat4", "name": "Peralatan Rumah", "description": "Peralatan dan furnitur rumah tangga", "color": "#10b981" },
-  { "categoryId": "cat5", "name": "Olahraga", "description": "Perlengkapan olahraga dan kebugaran", "color": "#6366f1" },
-  { "categoryId": "cat6", "name": "Kesehatan & Kecantikan", "description": "Produk kesehatan dan perawatan diri", "color": "#ef4444" },
-  { "categoryId": "cat7", "name": "Otomotif", "description": "Aksesori dan suku cadang kendaraan", "color": "#78716c" },
-  { "categoryId": "cat8", "name": "Buku & Alat Tulis", "description": "Buku, alat tulis, dan perlengkapan kantor", "color": "#0891b2" }
+  { "categoryId": "cat1", "name": "Electronics", "description": "Electronic devices, gadgets, and accessories", "color": "#3b82f6" },
+  { "categoryId": "cat2", "name": "Clothing & Fashion", "description": "Apparel, footwear, and fashion accessories", "color": "#ec4899" },
+  { "categoryId": "cat3", "name": "Food & Beverages", "description": "Packaged foods, drinks, and grocery items", "color": "#f59e0b" },
+  { "categoryId": "cat4", "name": "Home & Living", "description": "Furniture, appliances, and home decor", "color": "#10b981" },
+  { "categoryId": "cat5", "name": "Sports & Fitness", "description": "Sporting goods, gym equipment, and outdoor gear", "color": "#6366f1" },
+  { "categoryId": "cat6", "name": "Health & Beauty", "description": "Skincare, wellness, and personal care products", "color": "#ef4444" },
+  { "categoryId": "cat7", "name": "Automotive", "description": "Car accessories, spare parts, and tools", "color": "#78716c" },
+  { "categoryId": "cat8", "name": "Books & Stationery", "description": "Books, writing supplies, and office stationery", "color": "#0891b2" }
 ]

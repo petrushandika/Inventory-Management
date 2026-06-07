@@ -1,13 +1,21 @@
 "use client";
 
 import { BarChart2, Package, ShoppingCart, Users } from "lucide-react";
-import CardExpenseSummary from "./CardExpenseSummary";
-import CardPopularProducts from "./CardPopularProducts";
-import CardPurchaseSummary from "./CardPurchaseSummary";
-import CardSalesSummary from "./CardSalesSummary";
+import dynamic from "next/dynamic";
 import StatCard from "./StatCard";
 import { useGetDashboardMetricsQuery } from "@/state/api";
 import { formatRupiahShort } from "@/lib/currency";
+
+const Spinner = () => (
+  <div className="flex items-center justify-center flex-1 min-h-[200px]">
+    <div className="w-8 h-8 rounded-full border-2 border-gray-200 border-t-blue-500 animate-spin" />
+  </div>
+);
+
+const CardPopularProducts = dynamic(() => import("./CardPopularProducts"), { ssr: false, loading: () => <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex items-center justify-center min-h-[300px]"><Spinner /></div> });
+const CardSalesSummary = dynamic(() => import("./CardSalesSummary"), { ssr: false, loading: () => <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex items-center justify-center min-h-[300px]"><Spinner /></div> });
+const CardPurchaseSummary = dynamic(() => import("./CardPurchaseSummary"), { ssr: false, loading: () => <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex items-center justify-center flex-1 min-h-[150px]"><Spinner /></div> });
+const CardExpenseSummary = dynamic(() => import("./CardExpenseSummary"), { ssr: false, loading: () => <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex items-center justify-center flex-1 min-h-[150px]"><Spinner /></div> });
 
 const fmtCount = (n: number) => {
   if (n >= 1_000) return `${(n / 1_000).toFixed(1)}k`;
@@ -74,10 +82,10 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 xl:items-stretch">
         <CardPopularProducts />
         <CardSalesSummary />
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 h-full">
           <CardPurchaseSummary />
           <CardExpenseSummary />
         </div>

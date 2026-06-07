@@ -11,30 +11,34 @@ const CardPopularProducts = () => {
   const { data: dashboardMetrics, isLoading } = useGetDashboardMetricsQuery();
 
   return (
-    <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex flex-col min-h-[520px]">
+    <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex flex-col h-full">
       {isLoading ? (
         <div className="flex items-center justify-center flex-1 min-h-[200px]">
-          <div className="text-sm text-gray-400 animate-pulse">Loading...</div>
+          <div className="w-8 h-8 rounded-full border-2 border-gray-200 border-t-blue-500 animate-spin" />
         </div>
       ) : (
         <>
           <h3 className="text-base font-semibold px-6 pt-5 pb-3 text-gray-800 shrink-0">Popular Products</h3>
           <hr className="border-gray-100" />
-          <div className="overflow-y-auto flex-1">
+          <div className="overflow-y-auto" style={{ maxHeight: 360 }}>
             {dashboardMetrics?.popularProducts?.map((product) => (
               <div
                 key={product.productId}
                 className="flex items-center justify-between gap-3 px-5 py-4 border-b border-gray-50 last:border-b-0 hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 shrink-0">
-                    <Image
-                      src={product.image || ""}
-                      alt={product.name}
-                      width={48}
-                      height={48}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 shrink-0 flex items-center justify-center">
+                    {product.image ? (
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        width={48}
+                        height={48}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-lg font-bold text-gray-300">{product.name[0]}</span>
+                    )}
                   </div>
                   <div className="min-w-0">
                     <p className="font-semibold text-gray-800 text-sm truncate">{product.name}</p>

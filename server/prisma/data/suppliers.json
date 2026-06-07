@@ -1,7 +1,10 @@
 [
-  { "supplierId": "sup1", "name": "PT Teknologi Maju", "email": "info@teknologimaju.co.id", "phone": "021-5550001", "address": "Jl. Gatot Subroto No. 45, Jakarta Selatan" },
-  { "supplierId": "sup2", "name": "CV Sumber Sandang", "email": "order@sumbersandang.com", "phone": "022-5550002", "address": "Jl. Asia Afrika No. 100, Bandung" },
-  { "supplierId": "sup3", "name": "PT Agro Nusantara", "email": "sales@agronusantara.id", "phone": "031-5550003", "address": "Jl. Pemuda No. 22, Surabaya" },
-  { "supplierId": "sup4", "name": "UD Mebel Jaya", "email": "mebeljaya@gmail.com", "phone": "0274-5550004", "address": "Jl. Malioboro No. 88, Yogyakarta" },
-  { "supplierId": "sup5", "name": "PT Olahraga Prima", "email": "contact@olahragaprima.com", "phone": "021-5550005", "address": "Jl. Sudirman No. 12, Jakarta Pusat" }
+  { "supplierId": "sup1", "name": "TechSource Global",      "email": "orders@techsourceglobal.com", "phone": "+62-21-5550001", "address": "Jl. Gatot Subroto No. 88, Jakarta Selatan" },
+  { "supplierId": "sup2", "name": "FashionHub Supply Co.",  "email": "supply@fashionhub.com",       "phone": "+62-21-5550002", "address": "Jl. Sudirman No. 45, Jakarta Pusat" },
+  { "supplierId": "sup3", "name": "FreshMart Distributors","email": "dist@freshmart.co.id",         "phone": "+62-22-5550003", "address": "Jl. Asia Afrika No. 12, Bandung" },
+  { "supplierId": "sup4", "name": "HomeGoods Wholesale",   "email": "wholesale@homegoods.id",       "phone": "+62-31-5550004", "address": "Jl. Pemuda No. 77, Surabaya" },
+  { "supplierId": "sup5", "name": "SportZone Imports",     "email": "import@sportzone.id",          "phone": "+62-21-5550005", "address": "Jl. Hayam Wuruk No. 33, Jakarta Barat" },
+  { "supplierId": "sup6", "name": "HealthPlus Pharma",     "email": "sales@healthpluspharma.com",   "phone": "+62-21-5550006", "address": "Jl. Rasuna Said No. 21, Jakarta Selatan" },
+  { "supplierId": "sup7", "name": "AutoParts Central",     "email": "parts@autopartscentral.id",    "phone": "+62-24-5550007", "address": "Jl. Pemuda No. 55, Semarang" },
+  { "supplierId": "sup8", "name": "EduBooks & Supplies",   "email": "hello@edubooks.co.id",         "phone": "+62-21-5550008", "address": "Jl. Kebon Sirih No. 10, Jakarta Pusat" }
 ]

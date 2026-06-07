@@ -14,10 +14,10 @@ const CardPurchaseSummary = () => {
   const isPositive = (lastDataPoint?.changePercentage ?? 0) >= 0;
 
   return (
-    <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex flex-col">
+    <div className="bg-white shadow-sm rounded-2xl border border-gray-100 flex flex-col flex-1">
       {isLoading ? (
         <div className="flex items-center justify-center min-h-[200px]">
-          <div className="text-sm text-gray-400 animate-pulse">Loading...</div>
+          <div className="w-8 h-8 rounded-full border-2 border-gray-200 border-t-blue-500 animate-spin" />
         </div>
       ) : (
         <>
@@ -26,8 +26,8 @@ const CardPurchaseSummary = () => {
             <hr className="border-gray-100" />
           </div>
 
-          <div className="px-6 pt-4 pb-3">
-            <div className="mb-3">
+          <div className="px-6 pt-4 pb-3 flex flex-col flex-1">
+            <div className="mb-3 shrink-0">
               <p className="text-xs text-gray-400 mb-0.5">Latest Purchase</p>
               <div className="flex items-baseline gap-2">
                 <p className="text-2xl font-bold text-gray-800">
@@ -42,7 +42,7 @@ const CardPurchaseSummary = () => {
               </div>
             </div>
 
-            <div style={{ height: 140 }}>
+            <div className="flex-1 min-h-[100px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={purchaseData} margin={{ top: 5, right: 5, left: -40, bottom: 0 }}>
                   <defs>

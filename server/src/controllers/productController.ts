@@ -27,21 +27,30 @@ export const createProduct = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { productId, image, name, price, rating, stockQuantity } = req.body;
+    const { productId, image, name, price, rating, stockQuantity, categoryId } = req.body;
 
-    if (!name || price == null || stockQuantity == null) {
-      res.status(400).json({ message: "name, price, and stockQuantity are required" });
+    if (!name?.trim()) {
+      res.status(400).json({ message: "Product name is required." });
+      return;
+    }
+    if (price == null || isNaN(Number(price)) || Number(price) < 0) {
+      res.status(400).json({ message: "Price must be a non-negative number." });
+      return;
+    }
+    if (stockQuantity == null || isNaN(Number(stockQuantity)) || Number(stockQuantity) < 0) {
+      res.status(400).json({ message: "Stock quantity must be a non-negative number." });
       return;
     }
 
     const product = await prisma.products.create({
       data: {
         productId: productId || randomUUID(),
-        image,
+        image: image ?? null,
         name: name.trim(),
         price: Number(price),
-        rating: rating != null ? Number(rating) : undefined,
-        stockQuantity: Number(stockQuantity),
+        rating: rating != null ? Math.min(5, Math.max(0, Number(rating))) : undefined,
+        stockQuantity: Math.floor(Number(stockQuantity)),
+        categoryId: categoryId ?? null,
       },
     });
     res.status(201).json(product);
@@ -57,16 +66,17 @@ export const updateProduct = async (
 ): Promise<void> => {
   try {
     const { productId } = req.params;
-    const { image, name, price, rating, stockQuantity } = req.body;
+    const { image, name, price, rating, stockQuantity, categoryId } = req.body;
 
     const product = await prisma.products.update({
       where: { productId },
       data: {
         ...(image !== undefined && { image }),
-        ...(name && { name: name.trim() }),
-        ...(price != null && { price: Number(price) }),
-        ...(rating != null && { rating: Number(rating) }),
-        ...(stockQuantity != null && { stockQuantity: Number(stockQuantity) }),
+        ...(name?.trim() && { name: name.trim() }),
+        ...(price != null && !isNaN(Number(price)) && { price: Math.max(0, Number(price)) }),
+        ...(rating != null && { rating: Math.min(5, Math.max(0, Number(rating))) }),
+        ...(stockQuantity != null && { stockQuantity: Math.max(0, Math.floor(Number(stockQuantity))) }),
+        ...(categoryId !== undefined && { categoryId: categoryId ?? null }),
       },
     });
     res.json(product);
