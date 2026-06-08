@@ -56,6 +56,7 @@ model Products {
   price         Float
   rating        Float?
   stockQuantity Int
+  minStock      Int         @default(20)
   categoryId    String?
   category      Categories? @relation(fields: [categoryId], references: [categoryId])
   Sales               Sales[]

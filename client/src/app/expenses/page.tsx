@@ -3,6 +3,7 @@
 import { ExpenseByCategorySummary, useGetExpensesByCategoryQuery } from "@/state/api";
 import { useMemo, useState } from "react";
 import Header from "@/app/(components)/Header";
+import ExportReportMenu from "@/app/(components)/ExportReportMenu";
 import { formatRupiah } from "@/lib/currency";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
@@ -53,6 +54,19 @@ const Expenses = () => {
 
   const totalAmount = aggregatedData.reduce((sum, d) => sum + d.amount, 0);
 
+  const filteredExpenses = expenses.filter((data: ExpenseByCategorySummary) => {
+    const matchesCategory = selectedCategory === "All" || data.category === selectedCategory;
+    const dataDate = parseDate(data.date);
+    const matchesDate = !startDate || !endDate || (dataDate >= startDate && dataDate <= endDate);
+    return matchesCategory && matchesDate;
+  });
+
+  const reportData = filteredExpenses.map((e) => ({
+    category: e.category,
+    amount: parseInt(e.amount, 10),
+    date: parseDate(e.date),
+  }));
+
   if (isLoading) return <div className="flex items-center justify-center py-32"><div className="w-8 h-8 rounded-full border-2 border-gray-200 border-t-blue-500 animate-spin" /></div>;
   if (isError || !expensesData) return <div className="flex items-center justify-center py-20 text-sm text-red-500">Failed to load expenses.</div>;
 
@@ -60,9 +74,17 @@ const Expenses = () => {
 
   return (
     <div className="pb-8">
-      <div className="mb-6">
-        <Header name="Expenses" />
-        <p className="text-sm text-gray-400 mt-1">Expense breakdown by category and date range.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <div>
+          <Header name="Expenses" />
+          <p className="text-sm text-gray-400 mt-1">Expense breakdown by category and date range.</p>
+        </div>
+        <ExportReportMenu
+          data={reportData}
+          filename="expenses"
+          title="Laporan Expenses"
+          disabled={!reportData.length}
+        />
       </div>
 
       <div className="flex flex-col lg:flex-row gap-5">

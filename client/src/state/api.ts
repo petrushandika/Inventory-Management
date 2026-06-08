@@ -9,6 +9,7 @@ export interface Product {
   price: number;
   rating?: number;
   stockQuantity: number;
+  minStock: number;
   categoryId?: string;
 }
 
@@ -17,6 +18,7 @@ export interface NewProduct {
   price: number;
   rating?: number;
   stockQuantity: number;
+  minStock?: number;
   image?: string;
   categoryId?: string;
 }
@@ -27,6 +29,7 @@ export interface UpdateProduct {
   price?: number;
   rating?: number;
   stockQuantity?: number;
+  minStock?: number;
   image?: string;
   categoryId?: string;
 }

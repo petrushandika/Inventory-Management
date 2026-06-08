@@ -1,8 +1,10 @@
 "use client";
 
 import { useDeleteProductMutation, useGetProductsQuery, Product } from "@/state/api";
-import { Download, Edit2, PlusCircle, Search, Trash2 } from "lucide-react";
-import { exportCsv } from "@/lib/exportCsv";
+import { Edit2, PlusCircle, Search, Trash2 } from "lucide-react";
+import ExportReportMenu from "@/app/(components)/ExportReportMenu";
+import StockStatusBadge from "@/app/(components)/StockStatusBadge";
+import { getStockStatus } from "@/lib/stockStatus";
 import { useCallback, useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Header from "@/app/(components)/Header";
@@ -57,6 +59,16 @@ const Products = () => {
   const { sorted: allSorted, sort, toggle } = useSort<Product, SortKey>(products, getValue);
   const sorted = pageSize === 0 ? allSorted : allSorted.slice((page - 1) * pageSize, page * pageSize);
 
+  const reportData = allSorted.map((p) => ({
+    name: p.name,
+    price: p.price,
+    stock: p.stockQuantity,
+    minStock: p.minStock ?? 20,
+    status: getStockStatus(p.stockQuantity, p.minStock ?? 20),
+    rating: p.rating ?? "",
+    category: p.categoryId ?? "",
+  }));
+
   const th = (label: string, key: SortKey, cls = "") => (
     <th className={`text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3 cursor-pointer select-none group ${cls}`} onClick={() => toggle(key)}>
       <span className="inline-flex items-center">{label}<SortIcon dir={sort.dir} active={sort.key === key} /></span>
@@ -76,12 +88,12 @@ const Products = () => {
             <input className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 w-44 sm:w-52 transition-all"
               placeholder="Search products…" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           </div>
-          <button
-            onClick={() => exportCsv(allSorted.map((p) => ({ name: p.name, price: p.price, stock: p.stockQuantity, rating: p.rating ?? "", category: p.categoryId ?? "" })), "products")}
-            className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition shrink-0"
-          >
-            <Download className="w-4 h-4" /><span className="hidden sm:inline">Export</span>
-          </button>
+          <ExportReportMenu
+            data={reportData}
+            filename="products"
+            title="Laporan Produk"
+            disabled={!allSorted.length}
+          />
           <button onClick={() => router.push("/products/new")}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors shrink-0">
             <PlusCircle className="w-4 h-4" /><span className="hidden sm:inline">Add Product</span>
@@ -105,6 +117,8 @@ const Products = () => {
                   {th("Name", "name")}
                   {th("Price", "price")}
                   {th("Stock", "stockQuantity")}
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3 hidden lg:table-cell">Min Stock</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Status</th>
                   <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3 cursor-pointer select-none group hidden md:table-cell" onClick={() => toggle("rating")}>
                     <span className="inline-flex items-center">Rating<SortIcon dir={sort.dir} active={sort.key === "rating"} /></span>
                   </th>
@@ -125,9 +139,13 @@ const Products = () => {
                     </td>
                     <td className="px-4 py-3"><span className="text-sm font-medium text-gray-800">{formatRupiah(product.price)}</span></td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${product.stockQuantity > 100 ? "bg-green-50 text-green-700" : product.stockQuantity > 20 ? "bg-yellow-50 text-yellow-700" : "bg-red-50 text-red-700"}`}>
-                        {product.stockQuantity.toLocaleString("en-US")}
-                      </span>
+                      <span className="text-sm font-medium text-gray-800">{product.stockQuantity.toLocaleString("id-ID")}</span>
+                    </td>
+                    <td className="px-4 py-3 hidden lg:table-cell">
+                      <span className="text-sm text-gray-600">{product.minStock ?? 20}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <StockStatusBadge stockQuantity={product.stockQuantity} minStock={product.minStock ?? 20} />
                     </td>
                     <td className="px-4 py-3 hidden md:table-cell">
                       {product.rating != null ? <Rating rating={product.rating} /> : <span className="text-xs text-gray-400">—</span>}

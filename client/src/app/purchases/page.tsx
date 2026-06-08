@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { PlusCircle, Trash2, Eye, Download } from "lucide-react";
+import { PlusCircle, Trash2, Eye } from "lucide-react";
 import {
   useGetPurchaseOrdersQuery,
   useDeletePurchaseOrderMutation,
@@ -11,7 +11,7 @@ import {
   PurchaseOrder,
 } from "@/state/api";
 import Header from "@/app/(components)/Header";
-import { exportCsv } from "@/lib/exportCsv";
+import ExportReportMenu from "@/app/(components)/ExportReportMenu";
 
 const STATUS_COLORS: Record<OrderStatus, string> = {
   Draft: "bg-gray-100 text-gray-700",
@@ -43,19 +43,15 @@ export default function PurchasesPage() {
     await updateOrder({ orderId: order.orderId, status: newStatus });
   };
 
-  const handleExport = () => {
-    exportCsv(
-      orders.map((o) => ({
-        orderId: o.orderId,
-        supplier: o.supplier?.name ?? "",
-        status: o.status,
-        totalCost: o.totalCost,
-        notes: o.notes ?? "",
-        createdAt: o.createdAt,
-      })),
-      "purchase-orders"
-    );
-  };
+  const reportData = orders.map((o) => ({
+    orderId: o.orderId,
+    supplier: o.supplier?.name ?? "",
+    status: o.status,
+    items: o.items.length,
+    totalCost: o.totalCost,
+    notes: o.notes ?? "",
+    createdAt: new Date(o.createdAt).toLocaleDateString("id-ID"),
+  }));
 
   return (
     <div className="pb-8 w-full">
@@ -65,13 +61,12 @@ export default function PurchasesPage() {
           <p className="text-sm text-gray-400 mt-0.5">{orders.length} orders</p>
         </div>
         <div className="flex items-center gap-2 self-start sm:self-auto">
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition"
-          >
-            <Download className="w-4 h-4" />
-            <span className="hidden sm:inline">Export CSV</span>
-          </button>
+          <ExportReportMenu
+            data={reportData}
+            filename="purchase-orders"
+            title="Laporan Purchase Order"
+            disabled={!orders.length}
+          />
           <button
             onClick={() => router.push("/purchases/new")}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 py-2 rounded-lg transition"

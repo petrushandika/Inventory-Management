@@ -7,6 +7,7 @@ import { useGetCategoriesQuery, useDeleteCategoryMutation, Category } from "@/st
 import { useSort } from "@/lib/useSort";
 import SortIcon from "@/app/(components)/SortIcon";
 import Header from "@/app/(components)/Header";
+import ExportReportMenu from "@/app/(components)/ExportReportMenu";
 
 type SortKey = "name" | "products";
 
@@ -38,6 +39,11 @@ const CategoriesPage = () => {
   }, []);
   const { sorted: categories, sort, toggle } = useSort<Category, SortKey>(rawCategories, getValue);
 
+  const reportData = (categories ?? []).map((c) => ({
+    name: c.name,
+    products: c._count?.Products ?? 0,
+  }));
+
   return (
     <div className="pb-8 w-full">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
@@ -51,6 +57,12 @@ const CategoriesPage = () => {
             <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search categories…"
               className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 w-44 sm:w-52 transition-all" />
           </div>
+          <ExportReportMenu
+            data={reportData}
+            filename="categories"
+            title="Laporan Categories"
+            disabled={!categories?.length}
+          />
           <button onClick={() => router.push("/categories/new")}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors shrink-0">
             <PlusCircle className="w-4 h-4" /><span className="hidden sm:inline">Add Category</span>

@@ -5,6 +5,9 @@ import { Edit2, Search, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "../(components)/Header";
+import ExportReportMenu from "@/app/(components)/ExportReportMenu";
+import StockStatusBadge from "@/app/(components)/StockStatusBadge";
+import { getStockStatus } from "@/lib/stockStatus";
 import { formatRupiah } from "@/lib/currency";
 import { useSort } from "@/lib/useSort";
 import SortIcon from "@/app/(components)/SortIcon";
@@ -53,6 +56,15 @@ const Inventory = () => {
   const { sorted: allSorted, sort, toggle } = useSort<Product, SortKey>(products, getValue);
   const sorted = pageSize === 0 ? allSorted : allSorted.slice((page - 1) * pageSize, page * pageSize);
 
+  const reportData = allSorted.map((p) => ({
+    name: p.name,
+    price: p.price,
+    stock: p.stockQuantity,
+    minStock: p.minStock ?? 20,
+    status: getStockStatus(p.stockQuantity, p.minStock ?? 20),
+    rating: p.rating ?? "",
+  }));
+
   const th = (label: string, key: SortKey, cls = "") => (
     <th className={`text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3 cursor-pointer select-none group ${cls}`} onClick={() => toggle(key)}>
       <span className="inline-flex items-center">{label}<SortIcon dir={sort.dir} active={sort.key === key} /></span>
@@ -66,10 +78,18 @@ const Inventory = () => {
           <Header name="Inventory" />
           <p className="text-sm text-gray-400 mt-0.5">{products ? `${products.length} items in stock` : ""}</p>
         </div>
-        <div className="relative self-start sm:self-auto">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={15} />
-          <input className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 w-44 sm:w-52 transition-all"
-            placeholder="Search inventory…" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={15} />
+            <input className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 w-44 sm:w-52 transition-all"
+              placeholder="Search inventory…" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+          </div>
+          <ExportReportMenu
+            data={reportData}
+            filename="inventory"
+            title="Laporan Inventory"
+            disabled={!allSorted.length}
+          />
         </div>
       </div>
 
@@ -88,6 +108,7 @@ const Inventory = () => {
                   {th("Price", "price")}
                   {th("Rating", "rating", "hidden md:table-cell")}
                   {th("Stock", "stockQuantity")}
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3 hidden lg:table-cell">Min Stock</th>
                   <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Status</th>
                   <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Actions</th>
                 </tr>
@@ -99,11 +120,10 @@ const Inventory = () => {
                     <td className="px-4 py-3"><span className="text-sm font-semibold text-gray-800">{product.name}</span></td>
                     <td className="px-4 py-3"><span className="text-sm text-gray-700">{formatRupiah(product.price)}</span></td>
                     <td className="px-4 py-3 hidden md:table-cell"><span className="text-sm text-gray-700">{product.rating != null ? product.rating.toFixed(1) : "—"}</span></td>
-                    <td className="px-4 py-3"><span className="text-sm font-medium text-gray-800">{product.stockQuantity.toLocaleString("en-US")}</span></td>
+                    <td className="px-4 py-3"><span className="text-sm font-medium text-gray-800">{product.stockQuantity.toLocaleString("id-ID")}</span></td>
+                    <td className="px-4 py-3 hidden lg:table-cell"><span className="text-sm text-gray-600">{product.minStock ?? 20}</span></td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${product.stockQuantity > 100 ? "bg-green-50 text-green-700" : product.stockQuantity > 20 ? "bg-yellow-50 text-yellow-700" : "bg-red-50 text-red-700"}`}>
-                        {product.stockQuantity > 100 ? "In Stock" : product.stockQuantity > 20 ? "Low Stock" : "Critical"}
-                      </span>
+                      <StockStatusBadge stockQuantity={product.stockQuantity} minStock={product.minStock ?? 20} />
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">

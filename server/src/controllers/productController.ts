@@ -31,7 +31,7 @@ export const createProduct = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { productId, image, name, price, rating, stockQuantity, categoryId } = req.body;
+    const { productId, image, name, price, rating, stockQuantity, minStock, categoryId } = req.body;
 
     if (!name?.trim()) {
       res.status(400).json({ message: "Product name is required." });
@@ -43,6 +43,10 @@ export const createProduct = async (
     }
     if (stockQuantity == null || isNaN(Number(stockQuantity)) || Number(stockQuantity) < 0) {
       res.status(400).json({ message: "Stock quantity must be a non-negative number." });
+      return;
+    }
+    if (minStock != null && (isNaN(Number(minStock)) || Number(minStock) < 0)) {
+      res.status(400).json({ message: "Minimum stock must be a non-negative number." });
       return;
     }
 
@@ -61,6 +65,7 @@ export const createProduct = async (
         price: Number(price),
         rating: rating != null ? Math.min(5, Math.max(0, Number(rating))) : undefined,
         stockQuantity: Math.floor(Number(stockQuantity)),
+        minStock: minStock != null ? Math.floor(Number(minStock)) : 20,
         categoryId: categoryId ?? null,
       },
     });
@@ -77,7 +82,7 @@ export const updateProduct = async (
 ): Promise<void> => {
   try {
     const { productId } = req.params;
-    const { image, name, price, rating, stockQuantity, categoryId } = req.body;
+    const { image, name, price, rating, stockQuantity, minStock, categoryId } = req.body;
 
     let imageUrl: string | undefined = undefined;
 
@@ -111,6 +116,7 @@ export const updateProduct = async (
         ...(price != null && !isNaN(Number(price)) && { price: Math.max(0, Number(price)) }),
         ...(rating != null && { rating: Math.min(5, Math.max(0, Number(rating))) }),
         ...(stockQuantity != null && { stockQuantity: Math.max(0, Math.floor(Number(stockQuantity))) }),
+        ...(minStock != null && { minStock: Math.max(0, Math.floor(Number(minStock))) }),
         ...(categoryId !== undefined && { categoryId: categoryId ?? null }),
       },
     });

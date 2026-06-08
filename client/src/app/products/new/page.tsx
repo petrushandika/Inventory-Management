@@ -11,6 +11,7 @@ type FormState = {
   name: string;
   price: string;
   stockQuantity: string;
+  minStock: string;
   rating: string;
   categoryId: string;
   imageFile: File | null;
@@ -18,7 +19,7 @@ type FormState = {
 };
 
 const emptyForm = (): FormState => ({
-  name: "", price: "", stockQuantity: "", rating: "",
+  name: "", price: "", stockQuantity: "", minStock: "20", rating: "",
   categoryId: "", imageFile: null, imagePreview: "",
 });
 
@@ -55,6 +56,7 @@ const NewProductPage = () => {
         name: form.name.trim(),
         price: parseFloat(form.price),
         stockQuantity: parseInt(form.stockQuantity),
+        minStock: parseInt(form.minStock) || 20,
         rating: form.rating ? parseFloat(form.rating) : undefined,
         categoryId: form.categoryId || undefined,
         image: imageBase64,
@@ -149,8 +151,8 @@ const NewProductPage = () => {
               </div>
             </div>
 
-            {/* Price, Stock, Rating */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            {/* Price, Stock, Min Stock, Rating */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Price (Rp) <span className="text-red-400">*</span>
@@ -178,6 +180,21 @@ const NewProductPage = () => {
                   placeholder="0"
                   className={inputCls}
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Min Stock <span className="text-red-400">*</span>
+                </label>
+                <input
+                  required
+                  type="number"
+                  min="0"
+                  value={form.minStock}
+                  onChange={(e) => setForm((f) => ({ ...f, minStock: e.target.value }))}
+                  placeholder="20"
+                  className={inputCls}
+                />
+                <p className="text-xs text-gray-400 mt-1">Rule 11: Tersedia &gt; min+5, Warning = min, Tidak Tersedia &lt; min-5</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Rating (0–5)</label>

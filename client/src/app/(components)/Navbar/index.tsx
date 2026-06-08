@@ -3,13 +3,12 @@
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsDarkMode, setIsSidebarCollapsed } from "@/state";
 import { useGetProductsQuery, useGetUsersQuery } from "@/state/api";
+import { needsStockAlert } from "@/lib/stockStatus";
 import { AlertTriangle, Bell, Menu, Moon, Search, Settings, Sun, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
-const LOW_STOCK_THRESHOLD = 20;
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -25,7 +24,9 @@ const Navbar = () => {
 
   const { data: users, isLoading, isError } = useGetUsersQuery();
   const { data: products = [] } = useGetProductsQuery();
-  const lowStockProducts = products.filter((p) => p.stockQuantity <= LOW_STOCK_THRESHOLD);
+  const lowStockProducts = products.filter((p) =>
+    needsStockAlert(p.stockQuantity, p.minStock ?? 20)
+  );
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {

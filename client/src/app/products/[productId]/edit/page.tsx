@@ -8,11 +8,11 @@ import Breadcrumb from "@/app/(components)/Breadcrumb";
 import Link from "next/link";
 
 type FormState = {
-  name: string; price: string; stockQuantity: string; rating: string;
+  name: string; price: string; stockQuantity: string; minStock: string; rating: string;
   categoryId: string; imageFile: File | null; imagePreview: string;
 };
 
-const emptyForm = (): FormState => ({ name: "", price: "", stockQuantity: "", rating: "", categoryId: "", imageFile: null, imagePreview: "" });
+const emptyForm = (): FormState => ({ name: "", price: "", stockQuantity: "", minStock: "20", rating: "", categoryId: "", imageFile: null, imagePreview: "" });
 
 const inputCls = "w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-colors placeholder:text-gray-400";
 
@@ -34,7 +34,7 @@ const EditProductPage = () => {
     if (!products) return;
     const p = products.find((x) => x.productId === productId);
     if (!p) { router.replace("/products"); return; }
-    setForm({ name: p.name, price: String(p.price), stockQuantity: String(p.stockQuantity), rating: p.rating != null ? String(p.rating) : "", categoryId: p.categoryId ?? "", imageFile: null, imagePreview: p.image ?? "" });
+    setForm({ name: p.name, price: String(p.price), stockQuantity: String(p.stockQuantity), minStock: String(p.minStock ?? 20), rating: p.rating != null ? String(p.rating) : "", categoryId: p.categoryId ?? "", imageFile: null, imagePreview: p.image ?? "" });
     setReady(true);
   }, [products, productId, router]);
 
@@ -60,6 +60,7 @@ const EditProductPage = () => {
         name: form.name.trim(),
         price: parseFloat(form.price),
         stockQuantity: parseInt(form.stockQuantity),
+        minStock: parseInt(form.minStock) || 20,
         rating: form.rating ? parseFloat(form.rating) : undefined,
         categoryId: form.categoryId || undefined,
         image: imageBase64 ?? form.imagePreview,
@@ -144,8 +145,8 @@ const EditProductPage = () => {
               </div>
             </div>
 
-            {/* Price, Stock, Rating */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            {/* Price, Stock, Min Stock, Rating */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Price (Rp) <span className="text-red-400">*</span></label>
                 <input required type="number" min="0" value={form.price} onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))} placeholder="0" className={inputCls} />
@@ -153,6 +154,10 @@ const EditProductPage = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Stock Quantity <span className="text-red-400">*</span></label>
                 <input required type="number" min="0" value={form.stockQuantity} onChange={(e) => setForm((f) => ({ ...f, stockQuantity: e.target.value }))} placeholder="0" className={inputCls} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Min Stock <span className="text-red-400">*</span></label>
+                <input required type="number" min="0" value={form.minStock} onChange={(e) => setForm((f) => ({ ...f, minStock: e.target.value }))} placeholder="20" className={inputCls} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Rating (0–5)</label>

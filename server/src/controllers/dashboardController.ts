@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../lib/prisma.js";
+import { countLowStockProducts } from "../lib/stockStatus.js";
 
 export const getDashboardMetrics = async (
   req: Request,
@@ -18,7 +19,7 @@ export const getDashboardMetrics = async (
       expensesAggregate,
       productCount,
       userCount,
-      lowStockCount,
+      allProductsForStock,
       latestSale,
       latestPurchase,
     ] = await Promise.all([
@@ -56,7 +57,7 @@ export const getDashboardMetrics = async (
       }),
       prisma.products.count(),
       prisma.users.count(),
-      prisma.products.count({ where: { stockQuantity: { lt: 20 } } }),
+      prisma.products.findMany({ select: { stockQuantity: true, minStock: true } }),
       prisma.sales.findFirst({ orderBy: { timestamp: "desc" }, select: { timestamp: true } }),
       prisma.purchases.findFirst({ orderBy: { timestamp: "desc" }, select: { timestamp: true } }),
     ]);
@@ -65,6 +66,8 @@ export const getDashboardMetrics = async (
       ...item,
       amount: item.amount.toString(),
     }));
+
+    const lowStockCount = countLowStockProducts(allProductsForStock);
 
     // Stock value
     const allProducts = await prisma.products.findMany({

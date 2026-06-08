@@ -7,6 +7,7 @@ import { useGetSuppliersQuery, useDeleteSupplierMutation, Supplier } from "@/sta
 import { useSort } from "@/lib/useSort";
 import SortIcon from "@/app/(components)/SortIcon";
 import Header from "@/app/(components)/Header";
+import ExportReportMenu from "@/app/(components)/ExportReportMenu";
 import Pagination from "@/app/(components)/Pagination";
 
 type SortKey = "name" | "email" | "purchases";
@@ -43,6 +44,14 @@ const SuppliersPage = () => {
   const { sorted: allSuppliers, sort, toggle } = useSort<Supplier, SortKey>(rawSuppliers, getValue);
   const suppliers = pageSize === 0 ? allSuppliers : allSuppliers.slice((page - 1) * pageSize, page * pageSize);
 
+  const reportData = allSuppliers.map((s) => ({
+    name: s.name,
+    email: s.email ?? "",
+    phone: s.phone ?? "",
+    address: s.address ?? "",
+    purchases: s._count?.Purchases ?? 0,
+  }));
+
   const th = (label: string, key: SortKey, cls = "") => (
     <th className={`text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3 cursor-pointer select-none group ${cls}`} onClick={() => toggle(key)}>
       <span className="inline-flex items-center">{label}<SortIcon dir={sort.dir} active={sort.key === key} /></span>
@@ -62,6 +71,12 @@ const SuppliersPage = () => {
             <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search suppliers…"
               className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 w-44 sm:w-52 transition-all" />
           </div>
+          <ExportReportMenu
+            data={reportData}
+            filename="suppliers"
+            title="Laporan Suppliers"
+            disabled={!allSuppliers.length}
+          />
           <button onClick={() => router.push("/suppliers/new")}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors shrink-0">
             <PlusCircle className="w-4 h-4" /><span className="hidden sm:inline">Add Supplier</span>

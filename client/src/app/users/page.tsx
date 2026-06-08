@@ -5,6 +5,7 @@ import { Edit2, PlusCircle, Search, Trash2 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/app/(components)/Header";
+import ExportReportMenu from "@/app/(components)/ExportReportMenu";
 import Image from "next/image";
 import { useSort } from "@/lib/useSort";
 import SortIcon from "@/app/(components)/SortIcon";
@@ -62,6 +63,13 @@ const Users = () => {
 
   const roleCounts = allUsers?.reduce((acc, u) => { acc[u.role] = (acc[u.role] ?? 0) + 1; return acc; }, {} as Record<string, number>);
 
+  const reportData = (filtered ?? []).map((u) => ({
+    name: u.name,
+    email: u.email,
+    role: u.role,
+    createdAt: new Date(u.createdAt).toLocaleDateString("id-ID"),
+  }));
+
   const th = (label: string, key: SortKey, cls = "") => (
     <th
       className={`text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3 cursor-pointer select-none group ${cls}`}
@@ -89,6 +97,12 @@ const Users = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+          <ExportReportMenu
+            data={reportData}
+            filename="users"
+            title="Laporan Users"
+            disabled={!filtered?.length}
+          />
           <button
             onClick={() => router.push("/users/new")}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors shrink-0"
