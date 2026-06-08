@@ -5,7 +5,7 @@ import { setIsDarkMode, setIsSidebarCollapsed } from "@/state";
 import { useGetProductsQuery, useGetUsersQuery } from "@/state/api";
 import { needsStockAlert } from "@/lib/stockStatus";
 import { AlertTriangle, Bell, Menu, Moon, Search, Settings, Sun, X } from "lucide-react";
-import Image from "next/image";
+import RemoteImage from "@/app/(components)/RemoteImage";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -144,7 +144,7 @@ const Navbar = () => {
             {isLoading ? (
               <div className="w-full h-full bg-gray-200 animate-pulse" />
             ) : user?.image ? (
-              <Image src={user.image} width={32} height={32} alt={user.name} className="object-cover w-full h-full" />
+              <RemoteImage src={user.image} width={32} height={32} alt={user.name} className="object-cover w-full h-full" fallbackClassName="w-full h-full text-xs" />
             ) : (
               <span className="text-xs font-bold text-blue-600">
                 {user?.name?.[0]?.toUpperCase() ?? "?"}

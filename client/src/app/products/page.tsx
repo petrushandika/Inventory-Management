@@ -9,7 +9,7 @@ import { useCallback, useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Header from "@/app/(components)/Header";
 import Rating from "@/app/(components)/Rating";
-import Image from "next/image";
+import RemoteImage from "@/app/(components)/RemoteImage";
 import { formatRupiah } from "@/lib/currency";
 import { useSort } from "@/lib/useSort";
 import SortIcon from "@/app/(components)/SortIcon";
@@ -121,7 +121,7 @@ const Products = () => {
                   <tr key={product.productId} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3">
                       <div className="w-9 h-9 rounded-lg overflow-hidden bg-gray-100 shrink-0">
-                        {product.image ? <Image src={product.image} alt={product.name} width={36} height={36} className="w-full h-full object-cover" unoptimized /> : <div className="w-full h-full bg-gray-200" />}
+                        <RemoteImage src={product.image} alt={product.name} width={36} height={36} className="w-full h-full object-cover" fallbackClassName="w-full h-full text-sm" />
                       </div>
                     </td>
                     <td className="px-4 py-3">

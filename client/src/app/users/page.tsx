@@ -6,7 +6,7 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/app/(components)/Header";
 import ExportReportMenu from "@/app/(components)/ExportReportMenu";
-import Image from "next/image";
+import RemoteImage from "@/app/(components)/RemoteImage";
 import { useSort } from "@/lib/useSort";
 import SortIcon from "@/app/(components)/SortIcon";
 import Pagination from "@/app/(components)/Pagination";
@@ -156,7 +156,7 @@ const Users = () => {
                     <td className="px-4 py-3">
                       <div className="w-8 h-8 rounded-full bg-blue-100 overflow-hidden flex items-center justify-center shrink-0">
                         {user.image
-                          ? <Image src={user.image} alt={user.name} width={32} height={32} className="object-cover w-full h-full" />
+                          ? <RemoteImage src={user.image} alt={user.name} width={32} height={32} className="object-cover w-full h-full" fallbackClassName="w-full h-full text-xs" />
                           : <span className="text-xs font-bold text-blue-600">{user.name[0].toUpperCase()}</span>}
                       </div>
                     </td>

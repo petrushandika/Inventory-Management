@@ -106,7 +106,7 @@ async function seedUsers() {
       username: "admin",
       password: "admin",
       role: "Admin",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop",
+      image: "https://i.pravatar.cc/150?u=xstock-admin",
     },
     {
       userId: "00000000-0000-0000-0000-000000000002",
@@ -115,7 +115,7 @@ async function seedUsers() {
       username: "manager",
       password: "manager",
       role: "Manager",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop",
+      image: "https://i.pravatar.cc/150?u=xstock-manager",
     },
     {
       userId: "00000000-0000-0000-0000-000000000003",
@@ -124,7 +124,7 @@ async function seedUsers() {
       username: "staff",
       password: "staff",
       role: "Staff",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop",
+      image: "https://i.pravatar.cc/150?u=xstock-staff",
     },
     {
       userId: "00000000-0000-0000-0000-000000000004",
@@ -133,7 +133,7 @@ async function seedUsers() {
       username: "andi",
       password: "staff",
       role: "Staff",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop",
+      image: "https://i.pravatar.cc/150?u=xstock-andi",
     },
     {
       userId: "00000000-0000-0000-0000-000000000005",
@@ -142,7 +142,7 @@ async function seedUsers() {
       username: "dewi",
       password: "staff",
       role: "Staff",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop",
+      image: "https://i.pravatar.cc/150?u=xstock-dewi",
     },
   ];
 

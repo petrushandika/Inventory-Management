@@ -5,7 +5,7 @@ import { formatRupiah } from "@/lib/currency";
 import { ShoppingBag } from "lucide-react";
 import React from "react";
 import Rating from "@/app/(components)/Rating";
-import Image from "next/image";
+import RemoteImage from "@/app/(components)/RemoteImage";
 
 const CardPopularProducts = () => {
   const { data: dashboardMetrics, isLoading } = useGetDashboardMetricsQuery();
@@ -29,12 +29,13 @@ const CardPopularProducts = () => {
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 shrink-0 flex items-center justify-center">
                     {product.image ? (
-                      <Image
+                      <RemoteImage
                         src={product.image}
                         alt={product.name}
                         width={48}
                         height={48}
                         className="w-full h-full object-cover"
+                        fallbackClassName="w-full h-full text-lg"
                       />
                     ) : (
                       <span className="text-lg font-bold text-gray-300">{product.name[0]}</span>
