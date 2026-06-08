@@ -49,7 +49,7 @@ client/
 │   │   ├── (components)/       # Navbar, Sidebar, Breadcrumb, Pagination, dll.
 │   │   ├── dashboard/            # Dashboard + chart cards
 │   │   ├── products/             # List, new, [productId]/edit
-│   │   ├── inventory/            # View stok
+│   │   ├── inventory/            # View stock
 │   │   ├── users/                # CRUD user
 │   │   ├── categories/           # CRUD kategori
 │   │   ├── suppliers/            # CRUD supplier + map
@@ -170,7 +170,7 @@ npm run lint
 | `/` | Dashboard | Root, render dashboard |
 | `/login` | Login | Tanpa sidebar shell |
 | `/dashboard` | Dashboard | KPI + charts |
-| `/inventory` | Inventory | View stok + status badge |
+| `/inventory` | Inventory | View stock + status badge |
 | `/products` | Products | List produk |
 | `/products/new` | Add Product | Form tambah |
 | `/products/[productId]/edit` | Edit Product | Form edit |

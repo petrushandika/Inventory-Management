@@ -18,26 +18,26 @@ function normalizeRows(data: ReportRow[]): { headers: string[]; rows: string[][]
   return { headers, rows };
 }
 
-/** Rule 12 — Export laporan ke CSV */
+/** Rule 12 — Export report to CSV */
 export function exportReportCsv(data: ReportRow[], filename: string): void {
   exportCsv(data, filename);
 }
 
-/** Rule 12 — Export laporan ke Excel (.xlsx) */
+/** Rule 12 — Export report to Excel (.xlsx) */
 export function exportReportExcel(data: ReportRow[], filename: string): void {
   if (!data.length) return;
   const { headers, rows } = normalizeRows(data);
   const sheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
   const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, sheet, "Laporan");
+  XLSX.utils.book_append_sheet(workbook, sheet, "Report");
   XLSX.writeFile(workbook, `${filename}.xlsx`);
 }
 
-/** Rule 12 — Export laporan ke PDF */
+/** Rule 12 — Export report to PDF */
 export function exportReportPdf(
   data: ReportRow[],
   filename: string,
-  title = "Laporan"
+  title = "Report"
 ): void {
   if (!data.length) return;
   const { headers, rows } = normalizeRows(data);
@@ -45,7 +45,7 @@ export function exportReportPdf(
   doc.setFontSize(14);
   doc.text(title, 14, 16);
   doc.setFontSize(9);
-  doc.text(`Dicetak: ${new Date().toLocaleString("id-ID")}`, 14, 22);
+  doc.text(`Generated: ${new Date().toLocaleString("en-US")}`, 14, 22);
 
   autoTable(doc, {
     head: [headers],
@@ -58,8 +58,8 @@ export function exportReportPdf(
   doc.save(`${filename}.pdf`);
 }
 
-/** Rule 12 — Cetak laporan langsung ke printer */
-export function printReport(data: ReportRow[], title = "Laporan"): void {
+/** Rule 12 — Print report directly */
+export function printReport(data: ReportRow[], title = "Report"): void {
   if (!data.length) return;
   const { headers, rows } = normalizeRows(data);
 
@@ -80,7 +80,7 @@ export function printReport(data: ReportRow[], title = "Laporan"): void {
   tr:nth-child(even) { background: #f9fafb; }
 </style></head><body>
   <h1>${title}</h1>
-  <p>Dicetak: ${new Date().toLocaleString("id-ID")}</p>
+  <p>Generated: ${new Date().toLocaleString("en-US")}</p>
   <table><thead><tr>${tableHead}</tr></thead><tbody>${tableBody}</tbody></table>
 </body></html>`;
 

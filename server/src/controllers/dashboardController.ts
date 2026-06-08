@@ -57,7 +57,7 @@ export const getDashboardMetrics = async (
       }),
       prisma.products.count(),
       prisma.users.count(),
-      prisma.products.findMany({ select: { stockQuantity: true, minStock: true } }),
+      prisma.products.findMany({ select: { price: true, stockQuantity: true, minStock: true } }),
       prisma.sales.findFirst({ orderBy: { timestamp: "desc" }, select: { timestamp: true } }),
       prisma.purchases.findFirst({ orderBy: { timestamp: "desc" }, select: { timestamp: true } }),
     ]);
@@ -68,12 +68,7 @@ export const getDashboardMetrics = async (
     }));
 
     const lowStockCount = countLowStockProducts(allProductsForStock);
-
-    // Stock value
-    const allProducts = await prisma.products.findMany({
-      select: { price: true, stockQuantity: true },
-    });
-    const totalStockValue = allProducts.reduce(
+    const totalStockValue = allProductsForStock.reduce(
       (sum, p) => sum + p.price * p.stockQuantity,
       0
     );

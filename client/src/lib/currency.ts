@@ -1,13 +1,13 @@
 /**
- * Format a number as Indonesian Rupiah.
+ * Format a number as Indonesian Rupiah with English locale formatting.
  * Examples:
- *   1234567  → "Rp 1.234.567"
- *   1500000  → "Rp 1,5 jt"    (compact)
- *   2000000000 → "Rp 2 M"     (compact)
+ *   1234567  → "Rp 1,234,567"
+ *   1500000  → "Rp 1.5M"    (compact)
+ *   2000000000 → "Rp 2B"    (compact)
  */
 
 export const formatRupiah = (value: number): string => {
-  return new Intl.NumberFormat("id-ID", {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "IDR",
     minimumFractionDigits: 0,
@@ -15,33 +15,33 @@ export const formatRupiah = (value: number): string => {
   }).format(value);
 };
 
-/** Compact form: 1.5jt, 2M, etc. */
+/** Compact form: 1.5M, 2B, etc. */
 export const formatRupiahCompact = (value: number): string => {
   if (value >= 1_000_000_000) {
-    return `Rp ${(value / 1_000_000_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })} M`;
+    return `Rp ${(value / 1_000_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}B`;
   }
   if (value >= 1_000_000) {
-    return `Rp ${(value / 1_000_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })} jt`;
+    return `Rp ${(value / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`;
   }
   if (value >= 1_000) {
-    return `Rp ${(value / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })} rb`;
+    return `Rp ${(value / 1_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}K`;
   }
   return formatRupiah(value);
 };
 
-/** Short label for stat cards: Rp 528 jt, Rp 2 M */
+/** Short label for stat cards */
 export const formatRupiahShort = (value: number): string => {
   if (value >= 1_000_000_000_000) {
-    return `Rp ${(value / 1_000_000_000_000).toLocaleString("id-ID", { maximumFractionDigits: 2 })} T`;
+    return `Rp ${(value / 1_000_000_000_000).toLocaleString("en-US", { maximumFractionDigits: 2 })}T`;
   }
   if (value >= 1_000_000_000) {
-    return `Rp ${(value / 1_000_000_000).toLocaleString("id-ID", { maximumFractionDigits: 2 })} M`;
+    return `Rp ${(value / 1_000_000_000).toLocaleString("en-US", { maximumFractionDigits: 2 })}B`;
   }
   if (value >= 1_000_000) {
-    return `Rp ${(value / 1_000_000).toLocaleString("id-ID", { maximumFractionDigits: 2 })} jt`;
+    return `Rp ${(value / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 2 })}M`;
   }
   if (value >= 1_000) {
-    return `Rp ${(value / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 1 })} rb`;
+    return `Rp ${(value / 1_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}K`;
   }
   return formatRupiah(value);
 };

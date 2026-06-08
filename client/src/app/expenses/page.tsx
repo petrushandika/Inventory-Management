@@ -82,7 +82,7 @@ const Expenses = () => {
         <ExportReportMenu
           data={reportData}
           filename="expenses"
-          title="Laporan Expenses"
+          title="Expenses Report"
           disabled={!reportData.length}
         />
       </div>

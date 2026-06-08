@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { randomUUID } from "crypto";
-import { prisma } from "../lib/prisma.js";
+import { getPrisma } from "../lib/prisma.js";
 import { uploadImage, deleteImage, publicIdFromUrl } from "../lib/cloudinary.js";
 
 const isBase64Image = (s: string) => s.startsWith("data:image/");
@@ -12,6 +12,7 @@ export const getProducts = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    const prisma = getPrisma();
     const search = req.query.search?.toString();
     const products = await prisma.products.findMany({
       where: search
@@ -31,6 +32,7 @@ export const createProduct = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    const prisma = getPrisma();
     const { productId, image, name, price, rating, stockQuantity, minStock, categoryId } = req.body;
 
     if (!name?.trim()) {
@@ -81,6 +83,7 @@ export const updateProduct = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    const prisma = getPrisma();
     const { productId } = req.params;
     const { image, name, price, rating, stockQuantity, minStock, categoryId } = req.body;
 
@@ -132,6 +135,7 @@ export const deleteProduct = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    const prisma = getPrisma();
     const { productId } = req.params;
 
     // delete image from Cloudinary before removing record

@@ -60,7 +60,7 @@ const CategoriesPage = () => {
           <ExportReportMenu
             data={reportData}
             filename="categories"
-            title="Laporan Categories"
+            title="Categories Report"
             disabled={!categories?.length}
           />
           <button onClick={() => router.push("/categories/new")}

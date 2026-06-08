@@ -2,7 +2,7 @@
 
 import { useDeleteProductMutation, useGetProductsQuery, Product } from "@/state/api";
 import { Edit2, Search, Trash2 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Header from "../(components)/Header";
 import ExportReportMenu from "@/app/(components)/ExportReportMenu";
@@ -12,21 +12,9 @@ import { formatRupiah } from "@/lib/currency";
 import { useSort } from "@/lib/useSort";
 import SortIcon from "@/app/(components)/SortIcon";
 import Pagination from "@/app/(components)/Pagination";
+import DeleteModal from "@/app/(components)/DeleteModal";
 
 type SortKey = "name" | "price" | "rating" | "stockQuantity";
-
-const DeleteModal = ({ name, onConfirm, onCancel }: { name: string; onConfirm: () => void; onCancel: () => void }) => (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-    <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6">
-      <h3 className="text-base font-semibold text-gray-800 mb-2">Remove from Inventory</h3>
-      <p className="text-sm text-gray-500 mb-6">Are you sure you want to delete <span className="font-medium text-gray-800">{name}</span>? This action cannot be undone.</p>
-      <div className="flex gap-3 justify-end">
-        <button onClick={onCancel} className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Cancel</button>
-        <button onClick={onConfirm} className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">Delete</button>
-      </div>
-    </div>
-  </div>
-);
 
 const Inventory = () => {
   const router = useRouter();
@@ -39,7 +27,10 @@ const Inventory = () => {
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => {
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => setDebouncedSearch(searchTerm), 300);
+    timerRef.current = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+      setPage(1);
+    }, 300);
     return () => clearTimeout(timerRef.current);
   }, [searchTerm]);
 
@@ -87,7 +78,7 @@ const Inventory = () => {
           <ExportReportMenu
             data={reportData}
             filename="inventory"
-            title="Laporan Inventory"
+            title="Inventory Report"
             disabled={!allSorted.length}
           />
         </div>
@@ -120,7 +111,7 @@ const Inventory = () => {
                     <td className="px-4 py-3"><span className="text-sm font-semibold text-gray-800">{product.name}</span></td>
                     <td className="px-4 py-3"><span className="text-sm text-gray-700">{formatRupiah(product.price)}</span></td>
                     <td className="px-4 py-3 hidden md:table-cell"><span className="text-sm text-gray-700">{product.rating != null ? product.rating.toFixed(1) : "—"}</span></td>
-                    <td className="px-4 py-3"><span className="text-sm font-medium text-gray-800">{product.stockQuantity.toLocaleString("id-ID")}</span></td>
+                    <td className="px-4 py-3"><span className="text-sm font-medium text-gray-800">{product.stockQuantity.toLocaleString("en-US")}</span></td>
                     <td className="px-4 py-3 hidden lg:table-cell"><span className="text-sm text-gray-600">{product.minStock ?? 20}</span></td>
                     <td className="px-4 py-3">
                       <StockStatusBadge stockQuantity={product.stockQuantity} minStock={product.minStock ?? 20} />
@@ -141,12 +132,21 @@ const Inventory = () => {
       </div>
 
       {deleteTarget && (
-        <DeleteModal name={deleteTarget.name}
+        <DeleteModal
+          title="Remove from Inventory"
+          description={<>Are you sure you want to delete <span className="font-medium text-gray-800">{deleteTarget.name}</span>? This action cannot be undone.</>}
           onConfirm={async () => { await deleteProduct(deleteTarget.productId).unwrap().catch(console.error); setDeleteTarget(null); }}
-          onCancel={() => setDeleteTarget(null)} />
+          onCancel={() => setDeleteTarget(null)}
+        />
       )}
     </div>
   );
 };
 
-export default Inventory;
+const InventoryPage = () => (
+  <Suspense>
+    <Inventory />
+  </Suspense>
+);
+
+export default InventoryPage;

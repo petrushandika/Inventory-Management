@@ -67,7 +67,7 @@ const Users = () => {
     name: u.name,
     email: u.email,
     role: u.role,
-    createdAt: new Date(u.createdAt).toLocaleDateString("id-ID"),
+    createdAt: new Date(u.createdAt).toLocaleDateString("en-US"),
   }));
 
   const th = (label: string, key: SortKey, cls = "") => (
@@ -100,7 +100,7 @@ const Users = () => {
           <ExportReportMenu
             data={reportData}
             filename="users"
-            title="Laporan Users"
+            title="Users Report"
             disabled={!filtered?.length}
           />
           <button

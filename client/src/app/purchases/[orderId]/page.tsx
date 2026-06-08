@@ -76,7 +76,7 @@ export default function PurchaseOrderDetailPage({
           <div>
             <p className="text-gray-400 text-xs mb-1">Created</p>
             <p className="font-medium text-gray-800">
-              {new Date(order.createdAt).toLocaleDateString("id-ID", {
+              {new Date(order.createdAt).toLocaleDateString("en-US", {
                 day: "2-digit",
                 month: "long",
                 year: "numeric",
@@ -112,10 +112,10 @@ export default function PurchaseOrderDetailPage({
                 <td className="px-6 py-3 text-gray-800">{item.product?.name ?? item.productId}</td>
                 <td className="px-6 py-3 text-right text-gray-600">{item.quantity}</td>
                 <td className="px-6 py-3 text-right text-gray-600">
-                  Rp {item.unitCost.toLocaleString("id-ID")}
+                  Rp {item.unitCost.toLocaleString("en-US")}
                 </td>
                 <td className="px-6 py-3 text-right font-semibold text-gray-800">
-                  Rp {(item.quantity * item.unitCost).toLocaleString("id-ID")}
+                  Rp {(item.quantity * item.unitCost).toLocaleString("en-US")}
                 </td>
               </tr>
             ))}
@@ -126,7 +126,7 @@ export default function PurchaseOrderDetailPage({
                 Total Cost
               </td>
               <td className="px-6 py-3 text-right font-bold text-blue-600">
-                Rp {order.totalCost.toLocaleString("id-ID")}
+                Rp {order.totalCost.toLocaleString("en-US")}
               </td>
             </tr>
           </tfoot>

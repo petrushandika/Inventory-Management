@@ -50,7 +50,7 @@ export default function PurchasesPage() {
     items: o.items.length,
     totalCost: o.totalCost,
     notes: o.notes ?? "",
-    createdAt: new Date(o.createdAt).toLocaleDateString("id-ID"),
+    createdAt: new Date(o.createdAt).toLocaleDateString("en-US"),
   }));
 
   return (
@@ -64,7 +64,7 @@ export default function PurchasesPage() {
           <ExportReportMenu
             data={reportData}
             filename="purchase-orders"
-            title="Laporan Purchase Order"
+            title="Purchase Orders Report"
             disabled={!orders.length}
           />
           <button
@@ -144,10 +144,10 @@ export default function PurchasesPage() {
                     </td>
                     <td className="px-4 py-3 text-gray-600">{order.items.length}</td>
                     <td className="px-4 py-3 text-right font-semibold text-gray-800">
-                      Rp {order.totalCost.toLocaleString("id-ID")}
+                      Rp {order.totalCost.toLocaleString("en-US")}
                     </td>
                     <td className="px-4 py-3 text-gray-500 text-xs">
-                      {new Date(order.createdAt).toLocaleDateString("id-ID")}
+                      {new Date(order.createdAt).toLocaleDateString("en-US")}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-center gap-2">

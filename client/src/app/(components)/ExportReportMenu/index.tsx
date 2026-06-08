@@ -15,7 +15,7 @@ const OPTIONS: { format: ReportFormat; label: string; icon: typeof Download }[] 
   { format: "csv", label: "Export CSV", icon: Download },
   { format: "excel", label: "Export Excel", icon: FileSpreadsheet },
   { format: "pdf", label: "Export PDF", icon: FileText },
-  { format: "print", label: "Cetak", icon: Printer },
+  { format: "print", label: "Print", icon: Printer },
 ];
 
 const ExportReportMenu = ({ data, filename, title, disabled }: ExportReportMenuProps) => {
@@ -44,7 +44,7 @@ const ExportReportMenu = ({ data, filename, title, disabled }: ExportReportMenuP
         className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Download className="w-4 h-4" />
-        <span className="hidden sm:inline">Export Laporan</span>
+        <span className="hidden sm:inline">Export Report</span>
         <ChevronDown className="w-3.5 h-3.5" />
       </button>
 

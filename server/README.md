@@ -300,7 +300,7 @@ Base URL: `http://localhost:3001`
 | `/users` | `userRoutes.ts` | CRUD user |
 | `/categories` | `categoryRoutes.ts` | CRUD kategori |
 | `/suppliers` | `supplierRoutes.ts` | CRUD supplier |
-| `/purchase-orders` | `purchaseOrderRoutes.ts` | Purchase Order + update stok |
+| `/purchase-orders` | `purchaseOrderRoutes.ts` | Purchase Order + update stock |
 | `/expenses` | `expenseRoutes.ts` | Data pengeluaran |
 
 Dokumentasi lengkap: [`../docs/API.md`](../docs/API.md)

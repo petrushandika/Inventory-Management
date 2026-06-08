@@ -11,7 +11,7 @@ const StockStatusBadge = ({ stockQuantity, minStock, showQuantity = false }: Sto
 
   return (
     <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${className}`}>
-      {showQuantity && <span>{stockQuantity.toLocaleString("id-ID")}</span>}
+      {showQuantity && <span>{stockQuantity.toLocaleString("en-US")}</span>}
       <span>{label}</span>
     </span>
   );

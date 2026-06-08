@@ -192,7 +192,7 @@ export default function NewPurchaseOrderPage() {
               <div className="mt-4 flex justify-end">
                 <span className="text-sm font-semibold text-gray-700">
                   Total:{" "}
-                  <span className="text-blue-600">Rp {totalCost.toLocaleString("id-ID")}</span>
+                  <span className="text-blue-600">Rp {totalCost.toLocaleString("en-US")}</span>
                 </span>
               </div>
             </div>

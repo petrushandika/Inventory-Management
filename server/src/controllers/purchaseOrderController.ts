@@ -98,16 +98,37 @@ export const updatePurchaseOrder = async (req: Request, res: Response, next: Nex
     });
     if (!existing) return res.status(404).json({ message: "Purchase order not found" });
 
-    // When receiving, increment stock for all items
+    // When receiving, increment stock for all items atomically
     if (status === "Received" && existing.status !== "Received") {
-      await Promise.all(
-        existing.items.map((item) =>
+      await prisma.$transaction([
+        ...existing.items.map((item) =>
           prisma.products.update({
             where: { productId: item.productId },
             data: { stockQuantity: { increment: item.quantity } },
           })
-        )
-      );
+        ),
+        prisma.purchaseOrders.update({
+          where: { orderId },
+          data: {
+            ...(status !== undefined && { status }),
+            ...(notes !== undefined && { notes }),
+            ...(supplierId !== undefined && { supplierId }),
+          },
+        }),
+      ]);
+
+      const updated = await prisma.purchaseOrders.findUnique({
+        where: { orderId },
+        include: {
+          supplier: { select: { supplierId: true, name: true } },
+          items: {
+            include: {
+              product: { select: { productId: true, name: true, stockQuantity: true } },
+            },
+          },
+        },
+      });
+      return res.json(updated);
     }
 
     const updated = await prisma.purchaseOrders.update({

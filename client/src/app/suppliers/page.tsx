@@ -74,7 +74,7 @@ const SuppliersPage = () => {
           <ExportReportMenu
             data={reportData}
             filename="suppliers"
-            title="Laporan Suppliers"
+            title="Suppliers Report"
             disabled={!allSuppliers.length}
           />
           <button onClick={() => router.push("/suppliers/new")}
