@@ -13,5 +13,6 @@ export default defineConfig({
       const { PrismaPg } = await import("@prisma/adapter-pg");
       return new PrismaPg(process.env.DATABASE_URL!);
     },
+    seed: "tsx prisma/seed.ts",
   },
 });

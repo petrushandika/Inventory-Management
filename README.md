@@ -37,7 +37,7 @@ Inventory-Management/
 
 - **Dashboard** — KPI cards, sales chart, purchase chart, expense summary, popular products
 - **Products** — Full CRUD, image upload (Cloudinary), category, stock tracking
-- **Inventory** — Stock level view with status indicators (In Stock / Low Stock / Critical)
+- **Inventory** — Stock level view with status indicators (Active / Normal / Low Stock / Out of Stock)
 - **Purchase Orders** — Create POs, track status (Draft → Ordered → Received), auto-update stock on receive
 - **Suppliers** — Full CRUD with interactive map (Leaflet) for location
 - **Categories** — Full CRUD with color coding
@@ -123,8 +123,9 @@ Open [http://localhost:3000](http://localhost:3000)
 ## Default Login
 
 After seeding:
-- **Username:** `admin`
-- **Password:** `admin123`
+- **Admin:** `admin` / `admin`
+- **Manager:** `manager` / `manager`
+- **Staff:** `staff` / `staff`
 
 ## Documentation
 

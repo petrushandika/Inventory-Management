@@ -10,7 +10,7 @@ Base URL: `http://localhost:3001`
 ### POST /auth/login
 ```json
 // Request
-{ "username": "admin", "password": "admin123" }
+{ "username": "admin", "password": "admin" }
 
 // Response 200
 { "user": { "userId": "...", "name": "...", "email": "...", "role": "Admin" } }

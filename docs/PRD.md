@@ -61,7 +61,7 @@ XStock is a web-based inventory management system designed for small-to-medium b
 - Search and sort
 
 ### 4.3 Inventory
-- View all products with stock status (In Stock / Low Stock / Critical)
+- View all products with stock status (Active / Normal / Low Stock / Out of Stock)
 - Inline stock update via edit page
 - Delete product from inventory
 - Search and sort

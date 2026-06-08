@@ -194,7 +194,7 @@ const NewProductPage = () => {
                   placeholder="20"
                   className={inputCls}
                 />
-                <p className="text-xs text-gray-400 mt-1">Rule 11: Available &gt; min+5, Warning = min, Unavailable &lt; min-5</p>
+                <p className="text-xs text-gray-400 mt-1">Active &gt; min+5 · Normal = between · Low Stock = min · Out of Stock &lt; min-5</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Rating (0–5)</label>
